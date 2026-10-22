@@ -214,6 +214,79 @@ export const outfits = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Wardrobe-to-outfit recommendation builder
+// Reads the user's wardrobe tops and pairs each with color-compatible bottoms
+// using the existing getMatchingBottoms() engine from colorRules.js.
+// Returns objects shaped to match OutfitCard's expected schema.
+// IDs use the prefix "w_" so they never collide with static numeric IDs and
+// are never accidentally treated as persisted saved outfits.
+// ---------------------------------------------------------------------------
+import { getMatchingBottoms } from './colorRules';
+
+const TOP_CATEGORIES = new Set(['Tops', 'Shirts', 'T-Shirts', 'Dresses']);
+
+// Map wardrobe category → clothing type label used by OutfitCard
+const CLOTHING_MAP = {
+  Tops: 'Western', 'Shirts': 'Western', 'T-Shirts': 'Western', Dresses: 'Western',
+};
+
+// Derive a readable occasion from style prefs or fall back to 'Casual'
+function deriveOccasion(stylePrefs) {
+  const occ = stylePrefs?.preferredOccasions?.[0] || stylePrefs?.occasion;
+  return occ || 'Casual';
+}
+
+// Derive a style label from style prefs or fall back to 'Casual'
+function deriveStyle(stylePrefs) {
+  const sty = stylePrefs?.preferredStyles?.[0] || stylePrefs?.style;
+  return sty || 'Casual';
+}
+
+export function buildWardrobeOutfits(wardrobeItems, stylePrefs) {
+  if (!Array.isArray(wardrobeItems) || wardrobeItems.length === 0) return [];
+
+  const tops = wardrobeItems.filter((item) => item?.category && TOP_CATEGORIES.has(item.category));
+  if (tops.length === 0) return [];
+
+  const occasion = deriveOccasion(stylePrefs);
+  const style = deriveStyle(stylePrefs);
+  const results = [];
+
+  tops.forEach((top) => {
+    // getMatchingBottoms handles null/undefined/malformed hex gracefully
+    const compatibleBottoms = getMatchingBottoms(top.color || null);
+    // Use only the first compatible bottom to keep the list concise
+    const bottom = compatibleBottoms[0];
+    if (!bottom) return;
+
+    results.push({
+      // String ID with w_ prefix — never collides with static numeric IDs
+      id: `w_${top.id}_${bottom.hex.replace('#', '')}`,
+      name: `${top.name} with ${bottom.label}`,
+      description: `Pair your ${top.name} with ${bottom.label} for a ${style.toLowerCase()} look.`,
+      category: top.category,
+      occasion,
+      style,
+      clothing: CLOTHING_MAP[top.category] || 'Western',
+      // First color is the top's actual hex; second is the matched bottom
+      colors: [
+        top.color || '#9CA3AF',
+        bottom.hex,
+      ],
+      colorNames: `${top.color || 'Mixed'}, ${bottom.label}`,
+      budget: 'low',
+      gender: 'Female',
+      // Use the wardrobe item's own image; OutfitCard handles missing images
+      image: top.imageUrl || '',
+      // Flag so MyStyle can distinguish wardrobe combos from static outfits
+      _fromWardrobe: true,
+    });
+  });
+
+  return results;
+}
+
 export const filterOutfits = (filters) => {
   return outfits.filter((outfit) => {
     if (filters.occasion && filters.occasion !== 'All' && outfit.occasion !== filters.occasion) return false;

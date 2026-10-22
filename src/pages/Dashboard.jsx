@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { getSession, getSavedOutfits, saveOutfits, getWardrobe } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
+import { getSavedOutfits, saveOutfits, getWardrobe } from '../utils/storage';
 import { categories, outfits } from '../data/fashionData';
 import { Search, Heart, ArrowRight, Shirt, Star, Palette, X, TrendingUp, Bookmark } from 'lucide-react';
 
@@ -112,14 +113,15 @@ function OutfitModal({ outfit, savedIds, onToggleSave, onClose, onSelect }) {
 }
 
 export default function Dashboard() {
-  const user = getSession();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // All hooks declared unconditionally before any conditional return
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const [savedIds, setSavedIds] = useState(() => getSavedOutfits(user.username).map(o => o.id));
-  const wardrobe = getWardrobe(user.username);
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-
+  const [savedIds, setSavedIds] = useState(() =>
+    user ? getSavedOutfits(user.username).map(o => o.id) : []
+  );
   const searchResults = useMemo(() => {
     if (!search.trim()) return [];
     const q = search.toLowerCase();
@@ -131,6 +133,13 @@ export default function Dashboard() {
       o.subcategory.toLowerCase().includes(q)
     ).slice(0, 16);
   }, [search]);
+
+  // Redirect after hooks
+  if (!user) { navigate('/login', { replace: true }); return null; }
+
+  const wardrobe = getWardrobe(user.username);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   const toggleSave = outfit => {
     const cur = getSavedOutfits(user.username);
@@ -210,10 +219,10 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Category Pills */}
+            {/* Category Pills — original 8 only */}
             <div className="dm-section dm-flush">
               <div className="dm-cat-pills">
-                {categories.map(cat => (
+                {categories.slice(0, 8).map(cat => (
                   <Link key={cat.id} to={`/category/${cat.id}`} className="dm-cat-pill">
                     <Img src={cat.cover} alt={cat.label} className="dm-cat-pill-img" />
                     <span>{cat.label}</span>
@@ -229,7 +238,7 @@ export default function Dashboard() {
                 <span className="dm-sec-sub">Tap any category to see all looks</span>
               </div>
               <div className="dm-hero-grid">
-                {categories.map((cat, i) => (
+                {categories.slice(0, 8).map((cat, i) => (
                   <Link
                     key={cat.id}
                     to={`/category/${cat.id}`}
@@ -288,8 +297,8 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Per-category preview rows */}
-            {categories.map(cat => {
+            {/* Per-category preview rows — original 8 only */}
+            {categories.slice(0, 8).map(cat => {
               const rows = outfits.filter(o => o.category === cat.id).slice(0, 6);
               if (rows.length === 0) return null;
               return (

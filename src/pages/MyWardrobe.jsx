@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import StylePreferencesForm from '../components/StylePreferencesForm';
 import PhotoCapture from '../components/PhotoCapture';
 import AvatarViewer from '../components/AvatarViewer';
 import TryOnRoom from '../components/TryOnRoom';
-import { getSession, getWardrobe, saveWardrobe, getStylePrefs, saveStylePrefs, getAvatarPrefs, saveAvatarPrefs, getSavedLooks, saveLooks } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
+import { getWardrobe, saveWardrobe, getStylePrefs, saveStylePrefs, getAvatarPrefs, saveAvatarPrefs, getSavedLooks, saveLooks } from '../utils/storage';
 import { Plus, Trash2, Shirt, X, Upload, User, Camera, Sparkles, BookOpen, Edit2, CheckCircle } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Tops', 'Bottoms', 'Dresses', 'Shoes', 'Bags', 'Jewellery', 'Accessories'];
@@ -26,24 +28,28 @@ function normalizeCategory(cat) {
 }
 
 export default function MyWardrobe() {
-  const user = getSession();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
   const [activeTab, setActiveTab] = useState('closet');
-  const [items, setItems] = useState(getWardrobe(user.username));
+  const [items, setItems] = useState(() => user ? getWardrobe(user.username) : []);
   const [filter, setFilter] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState('');
-  const [stylePrefs, setStylePrefs] = useState(getStylePrefs(user.username));
-  const [avatarPrefs, setAvatarPrefs] = useState(getAvatarPrefs(user.username));
-  const [savedLooks, setSavedLooks] = useState(getSavedLooks(user.username));
+  const [stylePrefs, setStylePrefs] = useState(() => user ? getStylePrefs(user.username) : null);
+  const [avatarPrefs, setAvatarPrefs] = useState(() => user ? getAvatarPrefs(user.username) : null);
+  const [savedLooks, setSavedLooks] = useState(() => user ? getSavedLooks(user.username) : []);
   const [showPhotoCapture, setShowPhotoCapture] = useState(false);
   // tempPhotoRef holds the in-memory photo URL — never persisted
   const tempPhotoRef = useRef(null);
   const [photoConfirmed, setPhotoConfirmed] = useState(false);
   const [prefsSaved, setPrefsSaved] = useState(false);
   const fileRef = useRef();
+
+  if (!user) { navigate('/login', { replace: true }); return null; }
 
   const filtered = filter === 'All'
     ? items

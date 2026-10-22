@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import OutfitCard from '../components/OutfitCard';
-import { getSession, getSavedOutfits, saveOutfits } from '../utils/storage';
-import { filterOutfits } from '../data/outfits';
-import { SlidersHorizontal, Star } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { getSavedOutfits, saveOutfits, getWardrobe, getStylePrefs } from '../utils/storage';
+import { filterOutfits, buildWardrobeOutfits } from '../data/outfits';
+import { SlidersHorizontal, Star, Shirt } from 'lucide-react';
 
 const OCCASIONS = ['All', 'Casual', 'College', 'Office', 'Party', 'Wedding', 'Festival', 'Travel'];
 const CLOTHING = ['All', 'Traditional', 'Western', 'Indo-Western', 'Sportswear'];
@@ -16,24 +18,33 @@ const BUDGETS = [
 ];
 
 export default function MyStyle() {
-  const user = getSession();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // All hooks declared unconditionally before any conditional return
   const [filters, setFilters] = useState({ occasion: 'All', clothing: 'All', style: 'All', budget: 'all' });
   const [showFilters, setShowFilters] = useState(true);
+  const [savedIds, setSavedIds] = useState(() =>
+    user ? getSavedOutfits(user.username).map((o) => o.id) : []
+  );
 
+  // Redirect after hooks — satisfies rules-of-hooks
+  if (!user) { navigate('/login', { replace: true }); return null; }
+
+  const wardrobe = getWardrobe(user.username);
+  const stylePrefs = getStylePrefs(user.username);
+  const wardrobeOutfits = buildWardrobeOutfits(wardrobe, stylePrefs);
   const results = filterOutfits(filters);
-  const savedOutfits = getSavedOutfits(user.username);
 
   const handleSave = (outfit) => {
     const current = getSavedOutfits(user.username);
     const exists = current.find((o) => o.id === outfit.id);
-    if (exists) {
-      saveOutfits(user.username, current.filter((o) => o.id !== outfit.id));
-    } else {
-      saveOutfits(user.username, [...current, outfit]);
-    }
+    const updated = exists ? current.filter((o) => o.id !== outfit.id) : [...current, outfit];
+    saveOutfits(user.username, updated);
+    setSavedIds(updated.map((o) => o.id));
   };
 
-  const isSaved = (id) => getSavedOutfits(user.username).some((o) => o.id === id);
+  const isSaved = (id) => savedIds.includes(id);
 
   const setFilter = (key, val) => setFilters((f) => ({ ...f, [key]: val }));
 
@@ -50,6 +61,27 @@ export default function MyStyle() {
             <SlidersHorizontal size={16} /> {showFilters ? 'Hide' : 'Show'} Filters
           </button>
         </div>
+
+        {/* ── From Your Wardrobe ── */}
+        {wardrobeOutfits.length > 0 && (
+          <div className="wardrobe-outfits-section">
+            <div className="wardrobe-outfits-header">
+              <Shirt size={16} />
+              <span>From Your Wardrobe</span>
+              <span className="wardrobe-outfits-count">{wardrobeOutfits.length} combination{wardrobeOutfits.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div className="outfit-grid">
+              {wardrobeOutfits.map((outfit) => (
+                <OutfitCard
+                  key={outfit.id}
+                  outfit={outfit}
+                  onSave={handleSave}
+                  isSaved={isSaved(outfit.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {showFilters && (
           <div className="style-filters">

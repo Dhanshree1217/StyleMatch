@@ -1,22 +1,23 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Sparkles, LayoutDashboard, Shirt, Palette, Star, LogOut, X, Menu } from 'lucide-react';
-import { clearSession } from '../utils/storage';
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: <LayoutDashboard size={18} /> },
-  { label: 'My Wardrobe', to: '/wardrobe', icon: <Shirt size={18} /> },
-  { label: 'My Style', to: '/style', icon: <Star size={18} /> },
-  { label: 'My Color Profile', to: '/color-profile', icon: <Palette size={18} /> },
+  { label: 'Dashboard',       to: '/dashboard',     icon: <LayoutDashboard size={18} /> },
+  { label: 'My Wardrobe',     to: '/wardrobe',      icon: <Shirt size={18} /> },
+  { label: 'My Style',        to: '/style',         icon: <Star size={18} /> },
+  { label: 'My Color Profile',to: '/color-profile', icon: <Palette size={18} /> },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const { logout } = useAuth();
+  const [collapsed,   setCollapsed]   = useState(false);
+  const [mobileOpen,  setMobileOpen]  = useState(false);
 
-  const handleLogout = () => {
-    clearSession();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -33,10 +34,7 @@ export default function Sidebar() {
       </button>
 
       {mobileOpen && (
-        <div
-          className="sidebar-backdrop"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="sidebar-backdrop" onClick={() => setMobileOpen(false)} />
       )}
 
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
