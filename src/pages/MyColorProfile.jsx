@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import { getSession, getColorProfile, saveColorProfile } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
+import { getColorProfile, saveColorProfile } from '../utils/storage';
 import { Palette, Save, CheckCircle } from 'lucide-react';
 
 const SKIN_TONES = [
@@ -34,9 +36,17 @@ const colorSuggestions = {
 const emptyProfile = { skinTone: '', undertone: '', preferredColors: [], hairColor: '', eyeColor: '', bodyShape: '', gender: '' };
 
 export default function MyColorProfile() {
-  const user = getSession();
-  const [profile, setProfile] = useState(() => getColorProfile(user.username) || emptyProfile);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // All hooks declared unconditionally before any conditional return
+  const [profile, setProfile] = useState(() =>
+    user ? (getColorProfile(user.username) || emptyProfile) : emptyProfile
+  );
   const [saved, setSaved] = useState(false);
+
+  // Redirect after hooks
+  if (!user) { navigate('/login', { replace: true }); return null; }
 
   const toggleColor = (color) => {
     const current = profile.preferredColors;

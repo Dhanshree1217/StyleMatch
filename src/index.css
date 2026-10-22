@@ -559,6 +559,19 @@ ul { list-style: none; }
 
 .results-header { margin-bottom: 16px; font-size: 0.88rem; color: var(--grey); font-weight: 500; }
 
+/* ===== WARDROBE OUTFITS SECTION ===== */
+.wardrobe-outfits-section { margin-bottom: 32px; }
+.wardrobe-outfits-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px; font-size: 0.95rem; font-weight: 700; color: var(--charcoal);
+}
+.wardrobe-outfits-header svg { color: var(--pink-dark); flex-shrink: 0; }
+.wardrobe-outfits-count {
+  margin-left: auto; font-size: 0.8rem; font-weight: 500;
+  color: var(--grey); background: var(--grey-light);
+  padding: 2px 10px; border-radius: 50px;
+}
+
 /* ===== COLOR PROFILE ===== */
 .color-profile-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: start; }
 .color-form-section { display: flex; flex-direction: column; gap: 0; }
@@ -2465,3 +2478,13 @@ ul { list-style: none; }
 
 /* Fix hp-cat-cta hidden when Explore removed — ensure overlay still shows name */
 .hp-cat-overlay { padding-bottom: 16px; }
+
+/* ── AUTH LOADING SPINNER (ProtectedRoute) ── */
+.auth-loading-spinner {
+  display: inline-block;
+  width: 36px; height: 36px;
+  border: 3px solid var(--pink-light);
+  border-top-color: var(--pink-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}

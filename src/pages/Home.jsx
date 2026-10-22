@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import { ArrowRight, Heart, Sparkles, Shirt, Palette, Star, Mail, Play, Layers } from 'lucide-react';
 
 // Hero – unique, not reused anywhere else
-const HERO_IMG = 'blob:https://chatgpt.com/1daf57ec-578e-4dd5-9ade-cd0f13dec120';
+const HERO_IMG = 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&h=1000&fit=crop';
 
 // Category images – each URL is unique per category
 const CAT_IMGS = {

@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Search, SlidersHorizontal, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { categories, outfits } from '../data/fashionData';
-import { getSession, getSavedOutfits, saveOutfits } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
+import { getSavedOutfits, saveOutfits } from '../utils/storage';
 
 function FashionImg({ src, alt, className }) {
   const [err, setErr] = useState(false);
@@ -14,18 +15,22 @@ function FashionImg({ src, alt, className }) {
 export default function CategoryPage() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
-  const user = getSession();
-  const cat = categories.find((c) => c.id === categoryId);
+  const { user } = useAuth();
+
+  // All hooks declared unconditionally before any conditional return
   const [search, setSearch] = useState('');
   const [subFilter, setSubFilter] = useState('All');
   const [occasionFilter, setOccasionFilter] = useState('All');
   const [selectedOutfit, setSelectedOutfit] = useState(null);
-  const [savedIds, setSavedIds] = useState(() => getSavedOutfits(user?.username || '').map((o) => o.id));
+  const [savedIds, setSavedIds] = useState(() =>
+    user ? getSavedOutfits(user.username).map((o) => o.id) : []
+  );
 
-  const catOutfits = useMemo(() => outfits.filter((o) => o.category === categoryId), [categoryId]);
+  const cat = categories.find((c) => c.id === categoryId);
+  const effectiveCategoryId = cat?.alias || categoryId;
 
+  const catOutfits = useMemo(() => outfits.filter((o) => o.category === effectiveCategoryId), [effectiveCategoryId]);
   const occasions = useMemo(() => ['All', ...new Set(catOutfits.map((o) => o.occasion))], [catOutfits]);
-
   const filtered = useMemo(() => catOutfits.filter((o) => {
     const q = search.toLowerCase();
     const matchSearch = !q || o.title.toLowerCase().includes(q) || o.style.toLowerCase().includes(q) || o.occasion.toLowerCase().includes(q);
@@ -33,19 +38,21 @@ export default function CategoryPage() {
     const matchOcc = occasionFilter === 'All' || o.occasion === occasionFilter;
     return matchSearch && matchSub && matchOcc;
   }), [catOutfits, search, subFilter, occasionFilter]);
-
-  const toggleSave = (outfit) => {
-    const current = getSavedOutfits(user?.username || '');
-    const exists = current.find((o) => o.id === outfit.id);
-    const updated = exists ? current.filter((o) => o.id !== outfit.id) : [...current, outfit];
-    saveOutfits(user?.username || '', updated);
-    setSavedIds(updated.map((o) => o.id));
-  };
-
   const relatedOutfits = useMemo(() => {
     if (!selectedOutfit) return [];
     return (selectedOutfit.related || []).map((rid) => outfits.find((o) => o.id === rid)).filter(Boolean);
   }, [selectedOutfit]);
+
+  // Redirects after all hooks
+  if (!user) { navigate('/login', { replace: true }); return null; }
+
+  const toggleSave = (outfit) => {
+    const current = getSavedOutfits(user.username);
+    const exists = current.find((o) => o.id === outfit.id);
+    const updated = exists ? current.filter((o) => o.id !== outfit.id) : [...current, outfit];
+    saveOutfits(user.username, updated);
+    setSavedIds(updated.map((o) => o.id));
+  };
 
   if (!cat) return (
     <div className="dashboard-layout">

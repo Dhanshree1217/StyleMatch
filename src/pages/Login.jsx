@@ -1,35 +1,48 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react';
-import { findUser, setSession } from '../utils/storage';
+import { supabase } from '../lib/supabase';
 
-const LOGIN_IMG = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=1200&fit=crop&crop=center';
+const LOGIN_IMG    = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=1200&fit=crop&crop=center';
 const LOGIN_IMG_FB = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=1200&fit=crop';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [form, setForm]       = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
-  const [error, setError] = useState('');
-  const [imgErr, setImgErr] = useState(false);
+  const [error, setError]     = useState('');
+  const [loading, setLoading] = useState(false);
+  const [imgErr, setImgErr]   = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.username.trim() || !form.password) {
-      setError('Please enter both username and password.');
+    if (!form.email.trim() || !form.password) {
+      setError('Please enter both email and password.');
       return;
     }
-    const user = findUser(form.username);
-    if (!user || user.password !== form.password) {
-      setError('Invalid username or password. Please try again.');
+    setLoading(true);
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email:    form.email.trim(),
+      password: form.password,
+    });
+    setLoading(false);
+
+    if (authError) {
+      if (authError.message.toLowerCase().includes('email not confirmed')) {
+        setError('Please confirm your email address before signing in. Check your inbox for a confirmation link.');
+      } else if (authError.message.toLowerCase().includes('invalid login credentials')) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(authError.message);
+      }
       return;
     }
-    setSession(user);
+
     navigate('/dashboard');
   };
 
@@ -73,13 +86,14 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} noValidate className="prem-auth-form">
             <div className="prem-form-group">
-              <label>Username</label>
+              <label>Email</label>
               <input
-                name="username"
-                value={form.username}
+                name="email"
+                type="email"
+                value={form.email}
                 onChange={handleChange}
-                placeholder="Enter your username"
-                autoComplete="username"
+                placeholder="Enter your email"
+                autoComplete="email"
               />
             </div>
 
@@ -101,11 +115,11 @@ export default function Login() {
             </div>
 
             <div className="prem-form-meta">
-              <a href="#" className="prem-forgot">Forgot password?</a>
+              <Link to="/forgot-password" className="prem-forgot">Forgot password?</Link>
             </div>
 
-            <button type="submit" className="prem-submit-btn">
-              <LogIn size={17} /> Sign In <ArrowRight size={15} />
+            <button type="submit" className="prem-submit-btn" disabled={loading}>
+              <LogIn size={17} /> {loading ? 'Signing in…' : 'Sign In'} <ArrowRight size={15} />
             </button>
           </form>
 

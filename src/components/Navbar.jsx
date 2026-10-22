@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, Menu, X, Heart, User, LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
-import { getSession, clearSession } from '../utils/storage';
+import { useAuth } from '../context/AuthContext';
 
 const HOME_NAV = [
   { label: 'Home',        href: '#top' },
@@ -23,13 +23,13 @@ function scrollTo(id) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const session = getSession();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  const handleLogout = () => {
-    clearSession();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
     setOpen(false);
   };
@@ -60,24 +60,24 @@ export default function Navbar() {
             </a>
           </li>
         ))}
-        {session ? (
+        {user ? (
           <>
             <li><Link to="/dashboard" className="navbar-icon-link" onClick={() => setOpen(false)}><LayoutDashboard size={14} />Dashboard</Link></li>
             <li><button className="btn-outline" onClick={handleLogout}>Logout</button></li>
           </>
         ) : (
           <>
-            <li><Link to="/login" className="btn-outline" onClick={() => setOpen(false)}>Login</Link></li>
+            <li><Link to="/login"  className="btn-outline" onClick={() => setOpen(false)}>Login</Link></li>
             <li><Link to="/signup" className="btn-primary" onClick={() => setOpen(false)}>Sign Up</Link></li>
           </>
         )}
       </ul>
 
       <div className="navbar-actions">
-        {session && (
+        {user && (
           <>
             <Link to="/dashboard" className="navbar-icon-btn" title="Dashboard"><LayoutDashboard size={18} /></Link>
-            <Link to="/wardrobe" className="navbar-icon-btn" title="My Wardrobe"><Heart size={18} /></Link>
+            <Link to="/wardrobe"  className="navbar-icon-btn" title="My Wardrobe"><Heart size={18} /></Link>
             <Link to="/dashboard" className="navbar-icon-btn" title="Profile"><User size={18} /></Link>
           </>
         )}
