@@ -148,7 +148,7 @@ const accessoryOutfits = [
   { id:'a8', title:'Wrist Watch Gold', category:'accessories', subcategory:'Watches', occasion:'Office', style:'Classic', colors:['#FFD700'], image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop', related:['a2','a3','o2'] },
 ];
 
-export const outfits = [
+const seedOutfits = [
   ...traditionalOutfits,
   ...westernOutfits,
   ...collegeOutfits,
@@ -158,3 +158,269 @@ export const outfits = [
   ...seasonalOutfits,
   ...accessoryOutfits,
 ];
+
+export const ageGroups = [
+  'Infants',
+  'Kids',
+  'Teenagers',
+  'Young Adults',
+  'Adults',
+  'Middle-aged Adults',
+  'Seniors',
+];
+
+export const genders = ['Women', 'Men', 'Unisex', 'Girls', 'Boys', 'Gender-neutral'];
+
+export const ageGroupRanges = {
+  Infants: [0, 2],
+  Kids: [3, 12],
+  Teenagers: [13, 19],
+  'Young Adults': [20, 29],
+  Adults: [30, 44],
+  'Middle-aged Adults': [45, 59],
+  Seniors: [60, 100],
+};
+
+const colorNames = {
+  '#000': 'Black',
+  '#000080': 'Navy',
+  '#006400': 'Green',
+  '#008080': 'Teal',
+  '#1F2937': 'Charcoal',
+  '#20B2AA': 'Teal',
+  '#228B22': 'Green',
+  '#2F4F4F': 'Charcoal',
+  '#36454F': 'Charcoal',
+  '#4169E1': 'Blue',
+  '#4B0082': 'Purple',
+  '#708090': 'Grey',
+  '#800080': 'Purple',
+  '#8B0000': 'Red',
+  '#8B4513': 'Brown',
+  '#9370DB': 'Purple',
+  '#B0E0E6': 'Blue',
+  '#C0C0C0': 'Silver',
+  '#D2B48C': 'Beige',
+  '#D4B896': 'Beige',
+  '#DC143C': 'Red',
+  '#F5DEB3': 'Beige',
+  '#F5F5DC': 'Beige',
+  '#FF1493': 'Pink',
+  '#FF4500': 'Orange',
+  '#FF6347': 'Coral',
+  '#FF69B4': 'Pink',
+  '#FF8C00': 'Orange',
+  '#FFB6C1': 'Pink',
+  '#FFD700': 'Gold',
+  '#FFF': 'White',
+  '#FFF8DC': 'Cream',
+};
+
+const catalogPalette = [
+  { name: 'Black', hex: '#1F2937' },
+  { name: 'Blue', hex: '#4169E1' },
+  { name: 'Beige', hex: '#D4B896' },
+  { name: 'Green', hex: '#228B22' },
+  { name: 'Pink', hex: '#FF69B4' },
+  { name: 'White', hex: '#FFF' },
+  { name: 'Red', hex: '#8B0000' },
+  { name: 'Purple', hex: '#800080' },
+  { name: 'Grey', hex: '#708090' },
+  { name: 'Gold', hex: '#FFD700' },
+];
+
+const seasons = ['Spring', 'Summer', 'Autumn', 'Winter', 'All Season'];
+
+const catalogProfiles = {
+  traditional: {
+    styles: ['Classic', 'Printed', 'Embroidered', 'Festive', 'Minimal', 'Elegant', 'Textured', 'Modern', 'Artisan', 'Statement'],
+    items: [
+      ['Silk Saree', 'Sarees'], ['Cotton Saree', 'Sarees'], ['Anarkali Suit', 'Salwar Suits'],
+      ['Kurti Set', 'Kurtis'], ['Lehenga Set', 'Lehengas'], ['Palazzo Suit', 'Salwar Suits'],
+      ['Kurta Set', 'Kurtis'], ['Sharara Suit', 'Salwar Suits'], ['Fusion Tunic', 'Indo-Western'],
+      ['Draped Saree', 'Sarees'],
+    ],
+    occasions: ['Wedding', 'Festival', 'Casual', 'Celebration'],
+    images: [
+      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&h=680&fit=crop',
+    ],
+  },
+  western: {
+    styles: ['Relaxed', 'Classic', 'Printed', 'Modern', 'Minimal', 'Tailored', 'Bohemian', 'Sporty', 'Smart', 'Statement'],
+    items: [
+      ['Linen Dress', 'Dresses'], ['Denim Jacket Look', 'Casual'], ['Tee and Jeans Set', 'Jeans & Tops'],
+      ['Knit Co-ord Set', 'Co-ord Sets'], ['Maxi Dress', 'Dresses'], ['Wide-leg Jeans Look', 'Jeans & Tops'],
+      ['Casual Shirt', 'Casual'], ['Streetwear Set', 'Streetwear'], ['Wrap Dress', 'Dresses'],
+      ['Matching Top and Trouser Set', 'Co-ord Sets'],
+    ],
+    occasions: ['Casual', 'College', 'Travel', 'Party'],
+    images: [
+      'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=500&h=680&fit=crop',
+    ],
+  },
+  college: {
+    styles: ['Easygoing', 'Classic', 'Printed', 'Minimal', 'Trendy', 'Layered', 'Sporty', 'Preppy', 'Relaxed', 'Colorful'],
+    items: [
+      ['Campus Tee and Jeans', 'Everyday'], ['Casual Kurta Set', 'Casual Ethnic'], ['Denim Dungaree Look', 'Everyday'],
+      ['Everyday Shirt Dress', 'Everyday'], ['Lightweight Hoodie Set', 'Trendy'], ['Printed Tunic and Leggings', 'Casual Ethnic'],
+      ['Simple Knit Top', 'Minimal'], ['Relaxed Cargo Look', 'Trendy'], ['Cotton Co-ord Set', 'Trendy'],
+      ['Campus Layering Set', 'Everyday'],
+    ],
+    occasions: ['College', 'Casual', 'Weekend'],
+    images: [
+      'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=500&h=680&fit=crop',
+    ],
+  },
+  office: {
+    styles: ['Tailored', 'Classic', 'Modern', 'Minimal', 'Polished', 'Relaxed', 'Smart', 'Textured', 'Elegant', 'Contemporary'],
+    items: [
+      ['Button-down Shirt', 'Formal Shirts'], ['Blazer and Trouser Set', 'Blazers'],
+      ['Smart Casual Knit Set', 'Smart Casual'], ['Professional Midi Dress', 'Professional Dresses'],
+      ['Linen Shirt and Chinos', 'Smart Casual'], ['Tailored Waistcoat Set', 'Blazers'],
+      ['Pencil Skirt and Blouse', 'Professional Dresses'], ['Striped Work Shirt', 'Formal Shirts'],
+      ['Office Co-ord Set', 'Smart Casual'], ['Classic Suit Set', 'Blazers'],
+    ],
+    occasions: ['Office', 'Business Casual', 'Meeting'],
+    images: [
+      'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1600091166971-7f9faad6c498?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&h=680&fit=crop',
+    ],
+  },
+  party: {
+    styles: ['Glamorous', 'Satin', 'Sequin', 'Elegant', 'Modern', 'Velvet', 'Shimmer', 'Statement', 'Romantic', 'Metallic'],
+    items: [
+      ['Evening Gown', 'Evening Dresses'], ['Party Co-ord Set', 'Party Co-ords'],
+      ['Embellished Top', 'Glamorous Tops'], ['Birthday Dress', 'Birthday Looks'],
+      ['Cocktail Midi Dress', 'Evening Dresses'], ['Sparkle Top and Skirt Set', 'Party Co-ords'],
+      ['Dressy Blouse', 'Glamorous Tops'], ['Celebration Jumpsuit', 'Birthday Looks'],
+      ['Occasion Maxi Dress', 'Evening Dresses'], ['Party Trouser Set', 'Party Co-ords'],
+    ],
+    occasions: ['Party', 'Birthday', 'Celebration'],
+    images: [
+      'https://images.unsplash.com/photo-1566479179817-0b9f4b4a5f3e?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&h=680&fit=crop',
+    ],
+  },
+  wedding: {
+    styles: ['Festive', 'Embroidered', 'Elegant', 'Traditional', 'Modern', 'Artisan', 'Regal', 'Colorful', 'Classic', 'Statement'],
+    items: [
+      ['Wedding Guest Outfit', 'Wedding Guest'], ['Festive Anarkali Set', 'Festival'],
+      ['Engagement Gown', 'Engagement'], ['Bridal Lehenga Set', 'Bridal'],
+      ['Celebration Saree', 'Festival'], ['Wedding Kurta Set', 'Wedding Guest'],
+      ['Sangeet Co-ord Set', 'Wedding Guest'], ['Reception Outfit', 'Engagement'],
+      ['Ceremony Sharara Set', 'Bridal'], ['Festive Fusion Look', 'Festival'],
+    ],
+    occasions: ['Wedding', 'Festival', 'Engagement', 'Celebration'],
+    images: [
+      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1594938298603-c8148c4b4f7b?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=500&h=680&fit=crop',
+    ],
+  },
+  seasonal: {
+    styles: ['Breezy', 'Layered', 'Lightweight', 'Cozy', 'Classic', 'Relaxed', 'Weather-ready', 'Travel-ready', 'Minimal', 'Versatile'],
+    items: [
+      ['Summer Linen Set', 'Summer'], ['Warm Knit Layer Set', 'Winter'],
+      ['Rain-ready Jacket Look', 'Monsoon'], ['Travel Co-ord Set', 'Travel'],
+      ['Cotton Sundress', 'Summer'], ['Quilted Vest Outfit', 'Winter'],
+      ['Light Raincoat Set', 'Monsoon'], ['Packable Travel Outfit', 'Travel'],
+      ['Breezy Shirt and Shorts', 'Summer'], ['Cold-weather Sweater Set', 'Winter'],
+    ],
+    occasions: ['Casual', 'Travel', 'Outdoor'],
+    images: [
+      'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&h=680&fit=crop',
+      'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=680&fit=crop',
+    ],
+  },
+  accessories: {
+    styles: ['Classic', 'Modern', 'Minimal', 'Textured', 'Colorful', 'Polished', 'Relaxed', 'Statement', 'Versatile', 'Everyday'],
+    items: [
+      ['Everyday Sneakers', 'Shoes'], ['Leather Tote Bag', 'Handbags'],
+      ['Layered Necklace', 'Jewellery'], ['Classic Wristwatch', 'Watches'],
+      ['Comfort Sandals', 'Shoes'], ['Crossbody Bag', 'Handbags'],
+      ['Stud Earrings', 'Jewellery'], ['Leather Strap Watch', 'Watches'],
+      ['Dress Shoes', 'Shoes'], ['Compact Shoulder Bag', 'Handbags'],
+    ],
+    occasions: ['Casual', 'Office', 'Party', 'Wedding'],
+    images: [
+      'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&h=500&fit=crop',
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop',
+    ],
+  },
+};
+
+const primaryCategories = categories.slice(0, 8);
+
+export const outfits = primaryCategories.flatMap(({ id }) => {
+  const existing = seedOutfits
+    .filter((outfit) => outfit.category === id)
+    .map((outfit) => ({
+      ...outfit,
+      ageGroup: 'Young Adults',
+      gender: id === 'accessories' ? 'Gender-neutral' : 'Women',
+    }));
+  const profile = catalogProfiles[id];
+  const titles = new Set(existing.map((outfit) => outfit.title));
+  const additions = [];
+
+  for (const style of profile.styles) {
+    for (const [item, subcategory] of profile.items) {
+      if (existing.length + additions.length === 100) break;
+      const title = `${style} ${item}`;
+      if (titles.has(title)) continue;
+
+      const index = additions.length;
+      const audienceIndex = index % (ageGroups.length * genders.length);
+      const primaryColor = catalogPalette[index % catalogPalette.length];
+      const accentColor = catalogPalette[(index + 3) % catalogPalette.length];
+      additions.push({
+        id: `${id}-catalog-${String(index + 1).padStart(3, '0')}`,
+        title,
+        category: id,
+        subcategory,
+        occasion: profile.occasions[index % profile.occasions.length],
+        style,
+        colors: [primaryColor.hex, accentColor.hex],
+        colorNames: [primaryColor.name, accentColor.name],
+        image: profile.images[index % profile.images.length],
+        related: existing.slice(0, 3).map((outfit) => outfit.id),
+        ageGroup: ageGroups[audienceIndex % ageGroups.length],
+        gender: genders[Math.floor(audienceIndex / ageGroups.length)],
+      });
+      titles.add(title);
+    }
+    if (existing.length + additions.length === 100) break;
+  }
+
+  return [...existing, ...additions].map((outfit, index) => {
+    const [minAge, maxAge] = ageGroupRanges[outfit.ageGroup];
+    const suitableGenders = outfit.gender === 'Women' && outfit.subcategory !== 'Sarees'
+      ? ['Women', 'Gender-neutral']
+      : [outfit.gender];
+
+    return {
+      ...outfit,
+      ageGroups: [outfit.ageGroup],
+      ageRange: [minAge, maxAge],
+      genderSuitability: suitableGenders,
+      itemType: outfit.subcategory,
+      description: `${outfit.style} ${outfit.subcategory.toLowerCase()} for ${outfit.occasion.toLowerCase()} occasions.`,
+      colorNames: outfit.colorNames || [...new Set(outfit.colors.map((color) => colorNames[color.toUpperCase()] || 'Multicolor'))],
+      season: outfit.category === 'seasonal' ? outfit.subcategory : seasons[index % seasons.length],
+      imageSourceStatus: 'unverified',
+    };
+  });
+});
+
+export const imageSourceNote = 'Image URLs are existing Unsplash sources. Availability and item-to-image matches have not been verified; review them before production use.';

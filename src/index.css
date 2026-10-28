@@ -1089,6 +1089,12 @@ ul { list-style: none; }
    ============================================ */
 .cat-page { padding: 0; }
 .cat-header { position: relative; }
+.cat-breadcrumb {
+  position: absolute; top: 20px; right: 24px; z-index: 10;
+  display: flex; gap: 8px; align-items: center; color: #fff;
+  font-size: 0.78rem; text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+}
+.cat-breadcrumb a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .cat-back-btn {
   display: flex; align-items: center; gap: 6px;
   position: absolute; top: 16px; left: 16px; z-index: 10;
@@ -1118,11 +1124,35 @@ ul { list-style: none; }
 .cat-search-wrap svg { color: #9ca3af; }
 .cat-search-wrap input { flex: 1; border: none; background: none; font-size: 0.88rem; outline: none; }
 .cat-search-wrap button { color: #9ca3af; }
+.cat-demographic-filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.cat-select { display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 0.8rem; font-weight: 600; }
+.cat-select select {
+  border: 1.5px solid #e8e0d8; border-radius: 20px; background: #faf8f5;
+  color: #374151; padding: 8px 12px; font-size: 0.82rem; outline-color: #be123c;
+}
 .cat-filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.cat-count { padding: 14px 36px 0; font-size: 0.82rem; color: #9ca3af; font-weight: 500; }
+.cat-results-heading { display: flex; align-items: center; justify-content: space-between; padding: 14px 36px 0; }
+.cat-count { font-size: 0.82rem; color: #6b7280; font-weight: 600; }
+.cat-clear-filters { color: #be123c; font-size: 0.82rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.cat-clear-filters:disabled { color: #9ca3af; cursor: default; text-decoration: none; }
+.cat-active-filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 36px 0; }
+.cat-active-filter { border-radius: 30px; background: #fff1f2; color: #9f1239; padding: 5px 10px; font-size: 0.74rem; }
 
 .cat-page .fashion-gallery { padding: 20px 36px 36px; }
 .cat-page .empty-state { margin: 24px 36px; }
+.fashion-img { aspect-ratio: 4 / 5; height: auto; background: #f5f0f2; }
+.fashion-img.loading { opacity: 0.65; }
+.fashion-img.loaded { opacity: 1; transition: opacity 0.2s ease, transform 0.3s ease; }
+.fashion-image-unavailable {
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #f8e8ef, #eee9f7); color: #6b5360;
+  padding: 16px; text-align: center; font-size: 0.82rem;
+}
+.fashion-card:focus-visible { outline: 3px solid #be123c; outline-offset: 3px; }
+.fashion-description { color: #6b7280; font-size: 0.76rem; line-height: 1.4; margin: 5px 0; }
+.fashion-audience { color: #7c3aed; font-size: 0.7rem; font-weight: 600; margin-bottom: 8px; }
+.cat-load-more { display: flex; justify-content: center; padding: 0 36px 30px; }
+.cat-image-note { padding: 0 36px 24px; color: #9ca3af; font-size: 0.72rem; }
 
 /* ============================================
    OUTFIT DETAIL MODAL
@@ -1184,12 +1214,18 @@ ul { list-style: none; }
   .cat-hero { height: 220px; }
   .cat-hero-overlay { padding: 20px 16px; }
   .cat-filters { padding: 16px; }
-  .cat-count { padding: 12px 16px 0; }
+  .cat-results-heading { padding: 12px 16px 0; }
+  .cat-active-filters { padding: 10px 16px 0; }
   .cat-page .fashion-gallery { padding: 16px; }
+  .cat-image-note { padding: 0 16px 20px; }
+  .cat-load-more { padding: 0 16px 24px; }
+  .cat-breadcrumb { top: 18px; right: 16px; }
+  .cat-select { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .cat-select select { max-width: min(100%, 250px); }
   .cat-cards-grid { grid-template-columns: repeat(2, 1fr); }
   .cat-cards-grid.small { grid-template-columns: repeat(2, 1fr); }
   .fashion-gallery { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .fashion-img { height: 200px; }
+  .fashion-img { height: auto; }
 }
 @media (max-width: 480px) {
   .fashion-gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
