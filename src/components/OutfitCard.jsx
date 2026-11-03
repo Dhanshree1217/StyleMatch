@@ -1,20 +1,19 @@
 import { useState } from 'react';
 import { Heart, Bookmark, BookmarkCheck } from 'lucide-react';
+import SafeImage from './SafeImage';
 
 export default function OutfitCard({ outfit, onSave, isSaved }) {
   const [liked, setLiked] = useState(false);
-  const [imgError, setImgError] = useState(false);
-
-  const fallback = `https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop`;
 
   return (
     <div className="outfit-card">
       <div className="outfit-card-img-wrap">
-        <img
-          src={imgError ? fallback : outfit.image}
-          alt={outfit.name}
-          onError={() => setImgError(true)}
-          loading="lazy"
+        <SafeImage
+          src={outfit.image}
+          alt={outfit.name || 'Outfit'}
+          name={outfit.name || 'Outfit'}
+          fallbackSrc="/images/fallback.jpg"
+          className="outfit-card-img"
         />
         <span className="outfit-badge">{outfit.occasion}</span>
         <button
@@ -31,15 +30,15 @@ export default function OutfitCard({ outfit, onSave, isSaved }) {
         <p className="outfit-desc">{outfit.description}</p>
 
         <div className="outfit-colors">
-          {outfit.colors.map((c, i) => (
+          {outfit.colors && outfit.colors.map((c, i) => (
             <span key={i} className="color-dot" style={{ background: c }} title={c} />
           ))}
-          <span className="color-label">{outfit.colorNames}</span>
+          {outfit.colorNames && <span className="color-label">{outfit.colorNames}</span>}
         </div>
 
         <div className="outfit-tags">
-          <span className="tag">{outfit.style}</span>
-          <span className="tag">{outfit.clothing}</span>
+          {outfit.style && <span className="tag">{outfit.style}</span>}
+          {outfit.clothing && <span className="tag">{outfit.clothing}</span>}
         </div>
 
         <button

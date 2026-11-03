@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Eye, EyeOff, LogIn, ArrowRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import SafeImage from '../components/SafeImage';
 
-const LOGIN_IMG    = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=1200&fit=crop&crop=center';
-const LOGIN_IMG_FB = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=1200&fit=crop';
+const LOGIN_IMG    = '/images/auth-hero.jpg';
+const LOGIN_IMG_FB = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&q=80&auto=format&fit=crop';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ export default function Login() {
   const [showPass, setShowPass] = useState(false);
   const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
-  const [imgErr, setImgErr]   = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,11 +49,12 @@ export default function Login() {
   return (
     <div className="prem-auth-page">
       <div className="prem-auth-visual">
-        <img
-          src={imgErr ? LOGIN_IMG_FB : LOGIN_IMG}
+        <SafeImage
+          src={LOGIN_IMG}
+          fallbackSrc={LOGIN_IMG_FB}
           alt="Fashion editorial"
+          name="StyleMatch Fashion"
           className="prem-auth-img"
-          onError={() => setImgErr(true)}
         />
         <div className="prem-auth-visual-overlay">
           <div className="prem-auth-visual-content">

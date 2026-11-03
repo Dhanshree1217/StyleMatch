@@ -1,19 +1,24 @@
 import { useState, useMemo } from 'react';
 import AvatarViewer from './AvatarViewer';
+import SafeImage from './SafeImage';
 import { getMatchingBottoms, DEMO_BOTTOMS, DEMO_SHOES, DEMO_ACCESSORIES } from '../data/colorRules';
 import { Shirt, Save, RefreshCw, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
-const FALLBACK_IMG = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=240&fit=crop';
+const FALLBACK_IMG = '/images/fallback.jpg';
 
 function ItemCard({ item, selected, onClick, size = 'md' }) {
-  const [err, setErr] = useState(false);
   return (
     <button
       className={`tryon-item-card ${selected ? 'selected' : ''} size-${size}`}
       onClick={() => onClick(item)}
       title={item.name}
     >
-      <img src={err ? FALLBACK_IMG : (item.imageUrl || FALLBACK_IMG)} alt={item.name} onError={() => setErr(true)} />
+      <SafeImage
+        src={item.imageUrl || FALLBACK_IMG}
+        fallbackSrc={FALLBACK_IMG}
+        alt={item.name}
+        name={item.name}
+      />
       <div className="tryon-item-info">
         <span className="tryon-item-name">{item.name}</span>
         <span className="color-dot" style={{ background: item.color }} />
@@ -167,14 +172,24 @@ export default function TryOnRoom({ wardrobeTops, wardrobeBottoms, prefs, onSave
               <div className="selected-outfit-preview">
                 {selectedTop ? (
                   <div className="selected-item-row">
-                    <img src={selectedTop.imageUrl || FALLBACK_IMG} alt={selectedTop.name} onError={(e) => { e.target.src = FALLBACK_IMG; }} />
+                    <SafeImage
+                      src={selectedTop.imageUrl || FALLBACK_IMG}
+                      fallbackSrc={FALLBACK_IMG}
+                      alt={selectedTop.name}
+                      name={selectedTop.name}
+                    />
                     <div><span className="tryon-label">Top</span><strong>{selectedTop.name}</strong></div>
                   </div>
                 ) : <p className="tryon-empty-hint">No top selected</p>}
 
                 {selectedBottom ? (
                   <div className="selected-item-row">
-                    <img src={selectedBottom.imageUrl || FALLBACK_IMG} alt={selectedBottom.name} onError={(e) => { e.target.src = FALLBACK_IMG; }} />
+                    <SafeImage
+                      src={selectedBottom.imageUrl || FALLBACK_IMG}
+                      fallbackSrc={FALLBACK_IMG}
+                      alt={selectedBottom.name}
+                      name={selectedBottom.name}
+                    />
                     <div><span className="tryon-label">Bottom</span><strong>{selectedBottom.name}</strong></div>
                   </div>
                 ) : <p className="tryon-empty-hint">No bottom selected</p>}

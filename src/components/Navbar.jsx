@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const HOME_NAV = [
-  { label: 'Home',        href: '#top' },
-  { label: 'Collections', href: '#collections' },
-  { label: 'Trending',    href: '#trending' },
-  { label: 'Editorial',   href: '#editorial' },
-  { label: 'Features',    href: '#features' },
-  { label: 'Reviews',     href: '#reviews' },
+  { label: 'Home',       href: '#top' },
+  { label: 'Solutions',  href: '#solutions' },
+  { label: 'Platform',   href: '#platform' },
+  { label: 'Pricing',    href: '#pricing' },
+  { label: 'Reviews',    href: '#reviews' },
 ];
 
 function scrollTo(id) {
@@ -49,7 +48,7 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
         <Sparkles size={22} />
-        <span>StyleMatch</span>
+        <span>CleverPe</span>
       </Link>
 
       <ul className={`navbar-links ${open ? 'open' : ''}`}>

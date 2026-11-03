@@ -1,39 +1,40 @@
 import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import SafeImage from '../components/SafeImage';
 import { useAuth } from '../context/AuthContext';
 import { getSavedOutfits, saveOutfits, getWardrobe } from '../utils/storage';
 import { categories, outfits } from '../data/fashionData';
-import { Search, Heart, ArrowRight, Shirt, Star, Palette, X, TrendingUp, Bookmark } from 'lucide-react';
+import { buildAmazonSearchUrl } from '../services/productService';
+import { Search, Heart, ArrowRight, Shirt, Star, Palette, X, TrendingUp, Bookmark, ShoppingBag, ExternalLink } from 'lucide-react';
 
-function Img({ src, alt, className }) {
-  const [err, setErr] = useState(false);
+function Img({ src, alt, className, name, fallbackSrc }) {
   return (
-    <img
-      src={err ? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=680&fit=crop' : src}
+    <SafeImage
+      src={src}
       alt={alt}
+      name={name || alt}
       className={className}
-      onError={() => setErr(true)}
-      loading="lazy"
+      fallbackSrc={fallbackSrc || '/images/fallback.jpg'}
     />
   );
 }
 
 function OutfitCard({ outfit, savedIds, onToggleSave, onSelect }) {
-  const [err, setErr] = useState(false);
   return (
     <div className="dm-ocard" onClick={() => onSelect(outfit)}>
       <div className="dm-ocard-img-wrap">
-        <img
-          src={err ? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=680&fit=crop' : outfit.image}
+        <SafeImage
+          src={outfit.image}
           alt={outfit.title}
+          name={outfit.title}
           className="dm-ocard-img"
-          onError={() => setErr(true)}
-          loading="lazy"
+          fallbackSrc="/images/fallback.jpg"
         />
         <button
           className={`dm-ocard-fav ${savedIds.includes(outfit.id) ? 'saved' : ''}`}
           onClick={e => { e.stopPropagation(); onToggleSave(outfit); }}
+          aria-label="Save outfit"
         >
           <Heart size={14} fill={savedIds.includes(outfit.id) ? '#be123c' : 'none'} />
         </button>
@@ -46,10 +47,20 @@ function OutfitCard({ outfit, savedIds, onToggleSave, onSelect }) {
           <span>{outfit.occasion}</span>
           <div className="dm-ocard-colors">
             {outfit.colors.slice(0, 3).map(c => (
-              <span key={c} style={{ background: c }} className="dm-color-dot" />
+              <span key={c} style={{ background: c }} className="dm-color-dot" title={c} />
             ))}
           </div>
         </div>
+        <a
+          href={buildAmazonSearchUrl(`${outfit.title} ${outfit.subcategory}`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="dm-amazon-btn"
+          onClick={e => e.stopPropagation()}
+          aria-label={`Shop ${outfit.title} on Amazon`}
+        >
+          <ShoppingBag size={11} /> Shop on Amazon <ExternalLink size={10} />
+        </a>
       </div>
     </div>
   );
@@ -60,10 +71,10 @@ function OutfitModal({ outfit, savedIds, onToggleSave, onClose, onSelect }) {
   return (
     <div className="od-overlay" onClick={onClose}>
       <div className="od-modal" onClick={e => e.stopPropagation()}>
-        <button className="od-close" onClick={onClose}><X size={18} /></button>
+        <button className="od-close" onClick={onClose} aria-label="Close modal"><X size={18} /></button>
         <div className="od-grid">
           <div className="od-left">
-            <Img src={outfit.image} alt={outfit.title} className="od-main-img" />
+            <Img src={outfit.image} alt={outfit.title} name={outfit.title} className="od-main-img" />
           </div>
           <div className="od-right">
             <span className="od-sub">{outfit.subcategory}</span>
@@ -98,7 +109,7 @@ function OutfitModal({ outfit, savedIds, onToggleSave, onClose, onSelect }) {
                 <div className="od-related-grid">
                   {related.map(r => (
                     <div key={r.id} className="od-related-card" onClick={() => onSelect(r)}>
-                      <Img src={r.image} alt={r.title} className="od-related-img" />
+                      <Img src={r.image} alt={r.title} name={r.title} className="od-related-img" />
                       <span>{r.title}</span>
                     </div>
                   ))}
@@ -166,7 +177,7 @@ export default function Dashboard() {
               onChange={e => setSearch(e.target.value)}
               placeholder="Search outfits, styles, occasions, colors..."
             />
-            {search && <button onClick={() => setSearch('')}><X size={14} /></button>}
+            {search && <button onClick={() => setSearch('')} aria-label="Clear search"><X size={14} /></button>}
           </div>
           <div className="dm-toplinks">
             <Link to="/wardrobe" className="dm-toplink"><Shirt size={15} /><span>Wardrobe</span></Link>
@@ -224,7 +235,13 @@ export default function Dashboard() {
               <div className="dm-cat-pills">
                 {categories.slice(0, 8).map(cat => (
                   <Link key={cat.id} to={`/category/${cat.id}`} className="dm-cat-pill">
-                    <Img src={cat.cover} alt={cat.label} className="dm-cat-pill-img" />
+                    <Img
+                      src={cat.cover}
+                      fallbackSrc={cat.fallbackCover || '/images/fallback.jpg'}
+                      alt={cat.label}
+                      name={cat.label}
+                      className="dm-cat-pill-img"
+                    />
                     <span>{cat.label}</span>
                   </Link>
                 ))}
@@ -244,7 +261,13 @@ export default function Dashboard() {
                     to={`/category/${cat.id}`}
                     className={`dm-hero-card ${i === 0 ? 'span-col2' : ''} ${i === 5 ? 'span-col2' : ''}`}
                   >
-                    <Img src={cat.cover} alt={cat.label} className="dm-hero-img" />
+                    <Img
+                      src={cat.cover}
+                      fallbackSrc={cat.fallbackCover || '/images/fallback.jpg'}
+                      alt={cat.label}
+                      name={cat.label}
+                      className="dm-hero-img"
+                    />
                     <div className="dm-hero-overlay">
                       <div>
                         <h4>{cat.label}</h4>
@@ -279,10 +302,11 @@ export default function Dashboard() {
                 {trending.map(o => (
                   <div key={o.id} className="dm-hcard" onClick={() => setSelected(o)}>
                     <div className="dm-hcard-img-wrap">
-                      <Img src={o.image} alt={o.title} className="dm-hcard-img" />
+                      <Img src={o.image} alt={o.title} name={o.title} className="dm-hcard-img" />
                       <button
                         className={`dm-hcard-fav ${savedIds.includes(o.id) ? 'saved' : ''}`}
                         onClick={e => { e.stopPropagation(); toggleSave(o); }}
+                        aria-label="Save trending look"
                       >
                         <Heart size={13} fill={savedIds.includes(o.id) ? '#be123c' : 'none'} />
                       </button>

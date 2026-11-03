@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import SafeImage from '../components/SafeImage';
 import StylePreferencesForm from '../components/StylePreferencesForm';
 import PhotoCapture from '../components/PhotoCapture';
 import AvatarViewer from '../components/AvatarViewer';
@@ -18,7 +19,7 @@ const TABS = [
   { id: 'prefs', label: 'Preferences', icon: <BookOpen size={16} /> },
 ];
 const emptyForm = { name: '', category: 'Tops', color: '#f9a8d4', imageUrl: '', size: '', style: '' };
-const FALLBACK = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=300&fit=crop';
+const FALLBACK = '/images/fallback.jpg';
 
 // Normalize category for filtering (Shirts/T-Shirts → Tops, Jeans/Skirts → Bottoms)
 function normalizeCategory(cat) {
@@ -183,7 +184,12 @@ export default function MyWardrobe() {
                 {filtered.map((item) => (
                   <div key={item.id} className="wardrobe-card">
                     <div className="wardrobe-img-wrap">
-                      <img src={item.imageUrl || FALLBACK} alt={item.name} onError={(e) => { e.target.src = FALLBACK; }} />
+                      <SafeImage
+                        src={item.imageUrl || FALLBACK}
+                        alt={item.name}
+                        name={item.name}
+                        fallbackSrc={FALLBACK}
+                      />
                       <div className="wardrobe-card-actions">
                         <button className="wardrobe-action-btn edit" onClick={() => openEdit(item)} title="Edit"><Edit2 size={13} /></button>
                         <button className="wardrobe-action-btn remove" onClick={() => handleRemove(item.id)} title="Remove"><Trash2 size={13} /></button>
@@ -350,7 +356,7 @@ export default function MyWardrobe() {
                 </div>
                 <div className="form-group">
                   <label>Image URL (optional)</label>
-                  <input value={form.imageUrl} onChange={(e) => { setForm({ ...form, imageUrl: e.target.value }); setPreview(e.target.value); }} placeholder="https://example.com/image.jpg" />
+                  <input value={form.imageUrl} onChange={(e) => { setForm({ ...form, imageUrl: e.target.value }); setPreview(e.target.value); }} placeholder="https://images.unsplash.com/..." />
                 </div>
                 <div className="form-group">
                   <label>Or Upload Image <span className="optional">(stored locally with your consent)</span></label>
@@ -358,7 +364,15 @@ export default function MyWardrobe() {
                     <Upload size={15} /> Choose File
                   </button>
                   <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFile} />
-                  {preview && <img src={preview} alt="preview" className="img-preview" onError={() => setPreview('')} />}
+                  {preview && (
+                    <SafeImage
+                      src={preview}
+                      alt="preview"
+                      name="Preview"
+                      className="img-preview"
+                      fallbackSrc={FALLBACK}
+                    />
+                  )}
                 </div>
                 <div className="modal-actions">
                   <button type="button" className="btn-outline" onClick={() => setShowModal(false)}>Cancel</button>

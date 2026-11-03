@@ -24,7 +24,8 @@ export default function App() {
           <Route path="/reset-password"  element={<ResetPassword />} />
           <Route path="/dashboard"       element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/wardrobe"        element={<ProtectedRoute><MyWardrobe /></ProtectedRoute>} />
-          <Route path="/style"           element={<ProtectedRoute><MyStyle /></ProtectedRoute>} />
+          <Route path="/style"           element={<MyStyle />} />
+          <Route path="/my-style"        element={<MyStyle />} />
           <Route path="/color-profile"   element={<ProtectedRoute><MyColorProfile /></ProtectedRoute>} />
           <Route path="/category/:categoryId" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
           <Route path="*"                element={<Navigate to="/" replace />} />

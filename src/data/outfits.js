@@ -1,5 +1,7 @@
 // Predefined outfit data for demo recommendations.
-// Replace or extend this with an AI/ML API for production.
+// Updated with verified, high-resolution (800px+) unique images and working URLs.
+
+import { getMatchingBottoms } from './colorRules';
 
 export const outfits = [
   {
@@ -13,7 +15,7 @@ export const outfits = [
     colorNames: 'Blush Pink, Cream, White',
     budget: 'low',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&q=80&auto=format&fit=crop',
     description: 'A breezy floral sundress perfect for casual outings.',
   },
   {
@@ -27,7 +29,7 @@ export const outfits = [
     colorNames: 'White, Charcoal, Grey',
     budget: 'medium',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&q=80&auto=format&fit=crop',
     description: 'A timeless office look with crisp white shirt and tailored trousers.',
   },
   {
@@ -41,7 +43,7 @@ export const outfits = [
     colorNames: 'Red, Gold, Purple',
     budget: 'medium',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80&auto=format&fit=crop',
     description: 'A vibrant Anarkali suit for festive celebrations.',
   },
   {
@@ -55,7 +57,7 @@ export const outfits = [
     colorNames: 'Denim Blue, Dark Grey, White',
     budget: 'low',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=800&q=80&auto=format&fit=crop',
     description: 'A cool streetwear combo with denim jacket and joggers.',
   },
   {
@@ -69,7 +71,7 @@ export const outfits = [
     colorNames: 'Mint, Yellow, Pink',
     budget: 'low',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80&auto=format&fit=crop',
     description: 'A trendy pastel coord set for college days.',
   },
   {
@@ -83,7 +85,7 @@ export const outfits = [
     colorNames: 'Brown, Gold, Ivory',
     budget: 'high',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format&fit=crop',
     description: 'A regal sherwani ensemble for wedding occasions.',
   },
   {
@@ -97,7 +99,7 @@ export const outfits = [
     colorNames: 'Deep Pink, Gold, Purple',
     budget: 'high',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800&q=80&auto=format&fit=crop',
     description: 'A stunning lehenga choli for wedding festivities.',
   },
   {
@@ -111,7 +113,7 @@ export const outfits = [
     colorNames: 'Off White, Stone, Warm Grey',
     budget: 'medium',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=800&q=80&auto=format&fit=crop',
     description: 'A comfortable minimalist linen set for travel days.',
   },
   {
@@ -125,7 +127,7 @@ export const outfits = [
     colorNames: 'Violet, White, Light Grey',
     budget: 'low',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1594938298603-c8148c4b4f7b?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=800&q=80&auto=format&fit=crop',
     description: 'A stylish Indo-Western kurta with palazzo pants.',
   },
   {
@@ -139,7 +141,7 @@ export const outfits = [
     colorNames: 'Black, Gold, White',
     budget: 'medium',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1566479179817-0b9f4b4a5f3e?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=800&q=80&auto=format&fit=crop',
     description: 'A dazzling sequin dress for party nights.',
   },
   {
@@ -153,7 +155,7 @@ export const outfits = [
     colorNames: 'Black, Red, White',
     budget: 'low',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80&auto=format&fit=crop',
     description: 'A sporty track suit for active casual days.',
   },
   {
@@ -167,7 +169,7 @@ export const outfits = [
     colorNames: 'Navy, Beige, Tan',
     budget: 'medium',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1600091166971-7f9faad6c498?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80&auto=format&fit=crop',
     description: 'A smart blazer and chinos combo for the office.',
   },
   {
@@ -181,7 +183,7 @@ export const outfits = [
     colorNames: 'Amber, Brown, Cream',
     budget: 'low',
     gender: 'Female',
-    image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=800&q=80&auto=format&fit=crop',
     description: 'A flowing boho maxi skirt for travel adventures.',
   },
   {
@@ -195,7 +197,7 @@ export const outfits = [
     colorNames: 'Emerald, Gold, Ivory',
     budget: 'medium',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80&auto=format&fit=crop',
     description: 'A classic Nehru jacket with kurta for festivals.',
   },
   {
@@ -209,35 +211,25 @@ export const outfits = [
     colorNames: 'White, Black, Blue',
     budget: 'low',
     gender: 'Male',
-    image: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=800&q=80&auto=format&fit=crop',
     description: 'A relaxed graphic tee and jeans for everyday wear.',
   },
 ];
 
 // ---------------------------------------------------------------------------
 // Wardrobe-to-outfit recommendation builder
-// Reads the user's wardrobe tops and pairs each with color-compatible bottoms
-// using the existing getMatchingBottoms() engine from colorRules.js.
-// Returns objects shaped to match OutfitCard's expected schema.
-// IDs use the prefix "w_" so they never collide with static numeric IDs and
-// are never accidentally treated as persisted saved outfits.
 // ---------------------------------------------------------------------------
-import { getMatchingBottoms } from './colorRules';
-
 const TOP_CATEGORIES = new Set(['Tops', 'Shirts', 'T-Shirts', 'Dresses']);
 
-// Map wardrobe category → clothing type label used by OutfitCard
 const CLOTHING_MAP = {
-  Tops: 'Western', 'Shirts': 'Western', 'T-Shirts': 'Western', Dresses: 'Western',
+  Tops: 'Western', Shirts: 'Western', 'T-Shirts': 'Western', Dresses: 'Western',
 };
 
-// Derive a readable occasion from style prefs or fall back to 'Casual'
 function deriveOccasion(stylePrefs) {
   const occ = stylePrefs?.preferredOccasions?.[0] || stylePrefs?.occasion;
   return occ || 'Casual';
 }
 
-// Derive a style label from style prefs or fall back to 'Casual'
 function deriveStyle(stylePrefs) {
   const sty = stylePrefs?.preferredStyles?.[0] || stylePrefs?.style;
   return sty || 'Casual';
@@ -254,14 +246,11 @@ export function buildWardrobeOutfits(wardrobeItems, stylePrefs) {
   const results = [];
 
   tops.forEach((top) => {
-    // getMatchingBottoms handles null/undefined/malformed hex gracefully
     const compatibleBottoms = getMatchingBottoms(top.color || null);
-    // Use only the first compatible bottom to keep the list concise
     const bottom = compatibleBottoms[0];
     if (!bottom) return;
 
     results.push({
-      // String ID with w_ prefix — never collides with static numeric IDs
       id: `w_${top.id}_${bottom.hex.replace('#', '')}`,
       name: `${top.name} with ${bottom.label}`,
       description: `Pair your ${top.name} with ${bottom.label} for a ${style.toLowerCase()} look.`,
@@ -269,7 +258,6 @@ export function buildWardrobeOutfits(wardrobeItems, stylePrefs) {
       occasion,
       style,
       clothing: CLOTHING_MAP[top.category] || 'Western',
-      // First color is the top's actual hex; second is the matched bottom
       colors: [
         top.color || '#9CA3AF',
         bottom.hex,
@@ -277,9 +265,7 @@ export function buildWardrobeOutfits(wardrobeItems, stylePrefs) {
       colorNames: `${top.color || 'Mixed'}, ${bottom.label}`,
       budget: 'low',
       gender: 'Female',
-      // Use the wardrobe item's own image; OutfitCard handles missing images
       image: top.imageUrl || '',
-      // Flag so MyStyle can distinguish wardrobe combos from static outfits
       _fromWardrobe: true,
     });
   });

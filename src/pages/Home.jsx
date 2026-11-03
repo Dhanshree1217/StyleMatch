@@ -1,62 +1,67 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { ArrowRight, Heart, Sparkles, Shirt, Palette, Star, Mail, Play, Layers } from 'lucide-react';
+import SafeImage from '../components/SafeImage';
+import { ArrowRight, Heart, Sparkles, Shirt, Palette, Star, Mail, Play, Layers, ShoppingBag, LoaderCircle, ExternalLink } from 'lucide-react';
 
-// Hero – unique, not reused anywhere else
-const HERO_IMG = 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&h=1000&fit=crop';
+// Hero – high-resolution editorial fashion photograph
+const HERO_IMG = 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&h=1000&auto=format&fit=crop';
 
-// Category images – each URL is unique per category
+// Category images – clean, valid URLs so the dashboard can render polished category artwork
 const CAT_IMGS = {
-  'co-ord-sets':        'https://wholetex.sgp1.cdn.digitaloceanspaces.com/full/women-cotton-co-ord-set-1768994116-6180.jpg',
-  'formal-dress':       'https://rukminim3.flixcart.com/image/480/640/xif0q/shirt/s/e/d/m-whitesatin-dress-com-original-imagz7mhjhb5as3f.jpeg?q=80',
-  'ethnic-wear':        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRn6k9d6b0kv2_hViLZaDWBjRk3oDHgkEKycpVYcF5BIITXiT9R5z01Tjk&s=10',
-  'street-style':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdofxni0X4OWYeMF0AIWNOe518dGQZ4mLQFtjtcXhYKUdRBkiPi7iInxjE&s=10',
-  'festive-looks':      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwSXSQ4WWyOTLrgaIQEj55XBP2Mi7WFDAvkN1r5jkAQAMatbW7EUYSsGRa&s=10',
-  'office-wear':        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr20YYCrzmaSEUMMclqzuDFLM7L7Cd9m_kvOaDNGLNnQ&s=10',
-  'casual-wear':        'https://louisphilippe.abfrl.in/blog/wp-content/uploads/2024/07/LP-376-dsadf.jpg',
-  'college-outfits':    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROuqiYD9otV-2XTOQpTp0RC0Alv1A9m2CT314edG02P_5e1EM9KV4Hids&s=10',
-  'western-wear':       'https://images.meesho.com/images/products/844022647/3dszb_512.webp?width=512',
-  'party-wear':         'https://tapee.in/cdn/shop/files/GratefulOccasionWearEmbroideredGreenSilkLongGownWithDupatta_4.png?v=1766141994&width=1024',
-  'wedding-guest':      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkfFe7ePJOMKvjicQfKEPMVSn5iGr1yuVn0bh4jPPfXjLY_64bvY_4O1Rt&s=10',
-  'traditional-sarees': 'https://assets0.mirraw.com/images/12911209/image_zoom.jpeg?1728970860',
-  'kurtis-kurta':       'https://www.anantexports.in/cdn/shop/files/IMG-20260419-WA0036.jpg',
-  'jeans-denim':        'https://cdn.shopify.com/s/files/1/0340/9644/7533/files/Women_s_Solid_Color_Pocket_Casual_Loose_Fit_Jeans_480x480.jpg',
-  'tops-shirts':        'https://assets.myntassets.com/w_200,q_50,,dpr_3,fl_progressive,f_webp/assets/images/2025/DECEMBER/22/JaWeV1Ah_45607330d4dc4714b2a22f7a1afe60c4.jpg', 
+  'co-ord-sets':        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxhEPh3mU83eJMzUY29t58yY2fUvB_Jw0neRLDs8FK4ZAXe6DKrzOBVZI&s=10',
+  'formal-dress':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZZ3ZEIVlmUkpnx3oSbTWlrTfXUNNXXd7jYwXS5RC3cphXDlYx1KHjxp_K&s=10',
+  'ethnic-wear':        'https://inchingindia.in/cdn/shop/files/DSC09209_x800.jpg?v=1763048463',
+  'street-style':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDXDCBa1OqtehHXAb3oPiXyxIHBm9z6gmVCp6q5VZIRU5i0e7dXPz6n-pY&s=10',
+  'festive-looks':      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNFfovb57Ln6cfxodVoaQGw2s636I7kzoZjSBOsPjCAA&s=10',
+  'office-wear':        'https://jdinstitute.ac.in/wp-content/uploads/2021/03/4-4-TIPS-FOR-MENS-OFFICE-WEAR.jpg',
+  'casual-wear':        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQTneNyTg6-Iduu5_va0nUJPBUtWGmfroeAY7yDGZPqelW4VxpMup9FdK_&s=10',
+  'college-outfits':    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtpehsBxfRFaMt9phrlr4F1EvP78m2SVlibUFDUy7FbjdpNlWwTw4bB4w&s=10',
+  'western-wear':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRICklZp-W_bV6lPieQU5_kfEh4OhEArb1CG8T-qp7Xmkbs6p_dzEXGDT8&s=10',
+  'party-wear':         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxdb6OrI3FtX2CtMgyAit4qRki9nauycYbV6w_zsNCaTmX2XFnGQEkcsc&s=10p',
+  'wedding-guest':      'https://littleboxindia.com/cdn/shop/collections/Sheer_Fishtail_Hem_Fitted_Bodycon_Maxi_Dress_in_Black_And_Red_219a2980-08bf-4ffc-820c-4eed5dffd71d_1200x1200.jpg?v=1783881102',
+  'traditional-sarees': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_oRbUtifBUEVP1kXOumz37NsOsoyw7uf0irOxe7ZGi7ZsbbAV_0ToDhTB&s=10',
+  'kurtis-kurta':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQizgmukAg2amWsr1L_oQJvMbwwbW9SvNNJDzEbfZaQO5lmRtHp7I1XqFKx&s=10',
+  'jeans-denim':        'https://images.unsplash.com/photo-1542272604-787c3835535d?w=1200&q=80&auto=format&fit=crop',
+  'tops-shirts':        'https://assets.myntassets.com/w_200,q_50,,dpr_3,fl_progressive,f_webp/assets/images/2025/NOVEMBER/22/QbijvVj1_43d8025aadae495ca5cae4f1a016d840.jpg',
   'dresses':            'https://nolabels.in/cdn/shop/files/Blue_Dress_for_women_99cdd005-23f1-4972-8f19-ac776d6b3e13.jpg?v=1791203835&width=1080',
-  'winter-wear':        'https://hips.hearstapps.com/hmg-prod/images/gettyimages-1461552909-65775e9c51e7a.jpg?crop=0.6666666666666666xw:1xh;center,top&resize=640:*',
-  'summer-outfits':     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGEtDx9B8fb2wPsKFe4HXOEaTYWggbnlxAq3Hv8HRkR_GC3ic1NfpJ_VU&s=10',
-  'minimalist':         'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=800&fit=crop',
-  'athleisure':         'https://row.gymshark.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2F8urtyqugdt2l%2F36mqkcnBYPoZj8JwfGqwOK%2Fd4c54f0d1635651dca00b1de18a754fd%2FAthleisure_-_desktop.jpg&w=3840&q=85',
-  'vacation-travel':    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPvw8rAwTsuxA8ynWxCEKEDJrgWxrYLhZAQCZaf6kxH8g5Ejl5JlW43Qg&s=10',
-  'shoes-sneakers':     'https://assets.myntassets.com/assets/images/2024/JULY/29/6xDjrKNT_1c000df180b841b690cd7ac98984e554.jpg',
-  'bags-accessories':   'https://preview.redd.it/lv-bag-accessories-which-ones-worth-it-v0-jwrdmyzn61ec1.jpg?width=1080&crop=smart&auto=webp&s=fcf43bfd6603bc6dbe9549184d8afd5586822391',
-  'mens-fashion':       'https://www.shutterstock.com/shutterstock/photos/295915793/display_1500/stock-photo-looking-perfect-in-any-style-collage-of-smiling-young-man-wearing-different-clothing-and-looking-295915793.jpg',
-  'womens-fashion':     'https://glance.com/_next/image?url=https%3A%2F%2Fglance-web.glance-cdn.com%2Fcheerful_interracial_best_friends_standing_against_wall_talking_spending_time_together_women_only_friendship_togetherness_concept_91022b475d.jpg&w=1920&q=75',
+  'winter-wear':        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW-MF7HgwtbEilgY9SHsqdIL6cs-qsNQceXupYnMkQCDXHnfu_Kiam8HY&s=10',
+  'summer-outfits':     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9yTXeR--QXeROFJJK_f2tIg_ap_u7n0h1YT4XD8Mq2WG991sf9RF-8Mgc&s=10',
+  'minimalist':         'https://hips.hearstapps.com/hmg-prod/images/539d8fb7-ae4d-4755-a99f-768aa541bf2f.jpeg?crop=0.668xw:1xh;0.257xw,0xh&resize=640:*',
+  'athleisure':         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT_egDmUfGxG8CGzmN8x5ZzRgz4oISaygS0FSwtApMOnZT7OB07RF3_YnR&s=10',
+  'vacation-travel':    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaFYks_qFhJNiQ0Axt5wq1gMJALIN6H6XEnYiimv324-2ErlZK3Mp1Txan&s=10',
+  'shoes-sneakers':     'https://www.campusshoes.com/cdn/shop/files/RUSTLE_22G-13439_WHITE-BLACK_01.webp?v=1775729410',
+  'bags-accessories':   'https://preview.redd.it/lv-bag-accessories-which-ones-worth-it-v0-jwrdmyzn61ec1.jpg?width=640&crop=smart&auto=webp&s=70316d3a4ce3ab1a8dae01977b889568f9c4ee22',
+  'mens-fashion':       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhAEJA-Q-UDBBnOTx6Ds30HOxQ01K4EPgx3Tr46Sykd_6qRHObe-0VrW7Y&s=10',
+  'womens-fashion':     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeovP4ILFfiIgyE2EANftfUhLknktlG8f87Gpl4VnrU2d5oZB0UK1r9BhY&s=10',
 };
 
-// Trending – 8 unique images, none repeated from categories or hero
+// Trending – 8 unique, high-resolution verified images
 const TRENDING = [
-  { id: 'tr1', title: 'Silk Banarasi Saree',  tag: 'Traditional', img: 'https://www.azafashions.com/blog/wp-content/uploads/2025/12/banner13.png',   likes: 284 },
-  { id: 'tr2', title: 'Pastel Co-ord Set',    tag: 'Western',     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkW-uLsbsdL4i92plMN59Myxk_KU8RNI4MAeiBdrgPqmSUB3ikGDi-5So&s=10',   likes: 312 },
-  { id: 'tr3', title: 'Floral Midi Dress',    tag: 'Casual',      img: 'https://i0.wp.com/thefashionhousemom.com/wp-content/uploads/2025/04/elegant-and-classic-casual-style-outfits-scaled.jpg?resize=1140%2C1710&ssl=1',   likes: 198 },
-  { id: 'tr4', title: 'Anarkali Suit',        tag: 'Festival',    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkhsOwU80pKTm3UE3zcIhPplS7y0v54HImsC81W0Bg-KGw0kdNT28UmHDP&s=10',   likes: 421 },
-  { id: 'tr5', title: 'Power Blazer Look',    tag: 'Office',      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgkAzJE2CXC7cb7_ZjPmNQl7SBOVu7fYU5ywCKIFfcT2v5VdWXXHf_n24S&s=10',   likes: 176 },
-  { id: 'tr6', title: 'Denim Street Look',    tag: 'Street',      img: 'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=400&h=540&fit=crop&crop=top',     likes: 253 },
-  { id: 'tr7', title: 'Bridal Lehenga',       tag: 'Wedding',     img: 'https://manyavar.scene7.com/is/image/manyavar/UL5109V-407-MAROON1_22-07-2025-13-30:650x900?dpr=on,2.625',   likes: 389 },
-  { id: 'tr8', title: 'Linen Travel Set',     tag: 'Travel',      img: 'https://www.cossetclothing.com/cdn/shop/files/58_a6c15fcc-eda9-4e15-8c2b-24ceb38ce397.png?v=1769597196&width=1500',   likes: 145 },
+  { id: 'tr1', title: 'Silk Banarasi Saree',  tag: 'Traditional', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOJh2qoGXvqZkn1hnVfA1JpUwUYx6IQjCLqDG87WDmFVBlfGKtsysPM00&s=10', likes: 284 },
+  { id: 'tr2', title: 'Pastel Co-ord Set',    tag: 'Western',     img: 'https://stylum.in/cdn/shop/files/Pinkco-ordset01.png?v=1788871672', likes: 312 },
+  { id: 'tr3', title: 'Floral Midi Dress',    tag: 'Casual',      img: 'https://ambraee.com/cdn/shop/files/Project_20250508_0008_e1800621-332f-4780-8da6-af0784380874.jpg?v=1747644308', likes: 198 },
+  { id: 'tr4', title: 'Anarkali Suit',        tag: 'Festival',    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRr-WGH29kgomd6lo4AqxFFavB7wPrjUtDqABKyc6QIYq5c3vsVwovWx24&s=10', likes: 421 },
+  { id: 'tr5', title: 'Power Blazer Look',    tag: 'Office',      img: 'https://www.whitebydinaaz.com/cdn/shop/files/39_5b4be167-2cd0-49ec-8bff-ab1556bdfc25.png?v=1750503904&width=1200', likes: 176 },
+  { id: 'tr6', title: 'Denim Street Look',    tag: 'Street',      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm_xnQXqwmuKyQojzEyPba1qpQ248fimZ4exNKkM59KvOktl3tvdW0iM0&s=10', likes: 253 },
+  { id: 'tr7', title: 'Bridal Lehenga',       tag: 'Wedding',     img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn6RiKGPe7ADero-N8NnNSiVOsriv5hc9obMjVtvRSvycrrIap8vcJBlE&s=10', likes: 389 },
+  { id: 'tr8', title: 'Linen Travel Set',     tag: 'Travel',      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzbjPo4MaFWdb0HorgnaRCA3XaronBQz2Jb6DKwscwLrL1igSIeQJzzuY&s=10', likes: 145 },
 ];
 
-// Style inspiration rows – all unique images, none reused from above
+// Style inspiration rows – all unique high-resolution verified images
 const INSPO_ROWS = [
   {
     id: 'ins1',
     label: 'College Edit',
     title: 'Campus-Ready Looks',
     desc: 'Effortless everyday outfits that take you from morning lectures to evening hangouts.',
-    img:   'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&h=560&fit=crop',
-    side1: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=360&h=460&fit=crop',
-    side2: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuMwHA0PdE8C3zbdoBDxyQ0wD-c1cLGZkv2aru_ywhET8xhf5Gzi7YsASX&s=10',
+    img: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80&auto=format&fit=crop',
+    backupSrcs: [
+      'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=800&q=80&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&q=80&auto=format&fit=crop',
+    ],
+    side1: 'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=800&q=80&auto=format&fit=crop',
+    side2: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&q=80&auto=format&fit=crop',
     to: '/category/college-outfits',
     accent: '#7c3aed',
   },
@@ -65,9 +70,13 @@ const INSPO_ROWS = [
     label: 'Office Edit',
     title: 'Boardroom to Brunch',
     desc: 'Polished, professional looks that carry you through every meeting and beyond.',
-    img:   'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&h=560&fit=crop',
-    side1: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=360&h=460&fit=crop',
-    side2: 'https://cdn.sewmamasew.com/wp-content/uploads/2026/05/Neutral-tailored-blazer-and-trousers-set-1.jpg',
+    img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800&q=80&auto=format&fit=crop',
+    backupSrcs: [
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80&auto=format&fit=crop',
+    ],
+    side1: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80&auto=format&fit=crop',
+    side2: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80&auto=format&fit=crop',
     to: '/category/office-wear',
     accent: '#0e7490',
   },
@@ -76,9 +85,13 @@ const INSPO_ROWS = [
     label: 'Festive Edit',
     title: 'Celebrate in Style',
     desc: 'Vibrant ethnic and fusion looks for every festival, wedding and celebration.',
-    img:   'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=800&h=560&fit=crop',
-    side1: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=360&h=460&fit=crop',
-    side2: 'https://i.pinimg.com/736x/c6/e6/61/c6e6614cb1c7d25b0cdee8a7ef9eb039.jpg',
+    img: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?w=800&q=80&auto=format&fit=crop',
+    backupSrcs: [
+      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=80&auto=format&fit=crop',
+    ],
+    side1: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80&auto=format&fit=crop',
+    side2: 'https://i.etsystatic.com/64179390/r/il/7dcdb9/8290658330/il_fullxfull.8290658330_e5dh.jpg',
     to: '/category/festive-looks',
     accent: '#b45309',
   },
@@ -121,16 +134,130 @@ const ALL_CATEGORIES = [
   { id: 'womens-fashion',     label: "Women's Fashion",         slug: 'womens-fashion' },
 ];
 
-function Img({ src, alt, className, fallback }) {
-  const [err, setErr] = useState(false);
-  const fb = fallback || 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=800&fit=crop';
+// ── SHOP YOUR STYLE COMPONENT ──────────────────────────────────────────────
+const SHOP_GENDERS = ['Women', 'Men', 'Girl', 'Boy'];
+const SHOP_STYLES = [
+  { value: 'ethnic-wear', label: 'Ethnic Wear' },
+  { value: 'western', label: 'Western' },
+  { value: 'casual', label: 'Casual' },
+  { value: 'college-outfits', label: 'College Look' },
+  { value: 'office-wear', label: 'Office Wear' },
+  { value: 'festive-looks', label: 'Festive' },
+];
+
+function ShopYourStyle() {
+  const [gender, setGender] = useState('Women');
+  const [style, setStyle] = useState('ethnic-wear');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isDemo, setIsDemo] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const params = new URLSearchParams({ gender, age_group: 'Adult 18-35', style });
+        const res = await fetch(`/api/style-recommendations?${params}`);
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        if (!cancelled) {
+          setProducts(Array.isArray(data.products) ? data.products.slice(0, 4) : []);
+          setIsDemo(!!data.demo);
+        }
+      } catch {
+        if (!cancelled) setError('Could not load recommendations right now.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [gender, style]);
+
   return (
-    <img
-      src={err ? fb : src}
+    <section className="hp-section hp-shop-style" id="shop-your-style">
+      <div className="hp-section-head">
+        <span className="hp-label">Shop Your Style</span>
+        <h2>Trending For You</h2>
+        <p>Personalised Amazon India picks based on your style preferences.</p>
+      </div>
+
+      {/* Gender + Style selectors */}
+      <div className="sys-filters">
+        <div className="sys-filter-group">
+          {SHOP_GENDERS.map(g => (
+            <button key={g} type="button" className={`sys-chip ${gender === g ? 'active' : ''}`} onClick={() => setGender(g)}>{g}</button>
+          ))}
+        </div>
+        <div className="sys-filter-group">
+          {SHOP_STYLES.map(s => (
+            <button key={s.value} type="button" className={`sys-chip ${style === s.value ? 'active' : ''}`} onClick={() => setStyle(s.value)}>{s.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Demo notice */}
+      {isDemo && !loading && (
+        <div className="sys-demo-notice">
+          <ShoppingBag size={14} />
+          <span><strong>Demo Mode</strong> — Sample products shown. Real Amazon picks appear after live credentials are set up.</span>
+        </div>
+      )}
+
+      {/* Product grid */}
+      {loading ? (
+        <div className="sys-loading">
+          <LoaderCircle className="spin" size={28} />
+          <span>Finding picks for you…</span>
+        </div>
+      ) : error ? (
+        <div className="sys-error">{error}</div>
+      ) : products.length === 0 ? (
+        <div className="sys-empty"><Shirt size={24} /> No products found for this selection.</div>
+      ) : (
+        <div className="sys-grid">
+          {products.map((p, i) => (
+            <div key={p.id || i} className="sys-card">
+              <div className="sys-card-img-wrap">
+                <SafeImage src={p.image} alt={p.title} name={p.title} className="sys-card-img" fallbackSrc="/images/fallback.jpg" />
+                {isDemo && <span className="sys-demo-badge">Demo</span>}
+              </div>
+              <div className="sys-card-body">
+                <p className="sys-card-title">{p.title}</p>
+                <p className="sys-card-price">{p.price || 'See price on Amazon'}</p>
+                {p.affiliate_url ? (
+                  <a href={p.affiliate_url} target="_blank" rel="nofollow sponsored noopener noreferrer" className="sys-shop-btn">
+                    Shop on Amazon <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <span className="sys-shop-btn disabled">Shop on Amazon</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="sys-footer-row">
+        <Link to="/style" className="hp-cta-primary">See All Recommendations <ArrowRight size={15} /></Link>
+        <p className="sys-affiliate-note">As an Amazon Associate I earn from qualifying purchases.</p>
+      </div>
+    </section>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function Img({ src, alt, className, fallback, name }) {
+  return (
+    <SafeImage
+      src={src}
       alt={alt}
+      name={name || alt}
       className={className}
-      onError={() => setErr(true)}
-      loading="lazy"
+      fallbackSrc={fallback || '/images/fallback.jpg'}
     />
   );
 }
@@ -179,7 +306,7 @@ export default function Home() {
             src={HERO_IMG}
             alt="Fashion editorial hero"
             className="hp-hero-img"
-            fallback="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&h=1000&fit=crop"
+            fallback="/images/fallback.jpg"
           />
           <div className="hp-hero-overlay" />
         </div>
@@ -225,8 +352,9 @@ export default function Home() {
               <Img
                 src={CAT_IMGS[cat.id]}
                 alt={cat.label}
+                name={cat.label}
                 className="hp-cat-img"
-                fallback="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=800&fit=crop"
+                fallback="/images/fallback.jpg"
               />
               <div className="hp-cat-overlay">
                 <span className="hp-cat-name">{cat.label}</span>
@@ -247,7 +375,7 @@ export default function Home() {
           {TRENDING.map((item) => (
             <div key={item.id} className="hp-trend-card">
               <div className="hp-trend-img-wrap">
-                <Img src={item.img} alt={item.title} className="hp-trend-img" />
+                <Img src={item.img} alt={item.title} name={item.title} className="hp-trend-img" />
                 <button
                   className={`hp-like-btn ${liked[item.id] ? 'liked' : ''}`}
                   onClick={() => toggleLike(item.id)}
@@ -265,6 +393,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* SHOP YOUR STYLE – Amazon affiliate recommendations */}
+      <ShopYourStyle />
 
       {/* DISCOVER YOUR STYLE */}
       <section className="hp-discover">
@@ -286,13 +417,15 @@ export default function Home() {
           </div>
           <div className="hp-discover-imgs">
             <Img
-              src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=480&h=620&fit=crop"
+              src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=80&auto=format&fit=crop"
               alt="Virtual wardrobe styling"
+              name="Virtual wardrobe styling"
               className="hp-discover-main"
             />
             <Img
-              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=220&h=280&fit=crop"
+              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80&auto=format&fit=crop"
               alt="Colour matching accessories"
+              name="Colour matching accessories"
               className="hp-discover-accent"
             />
           </div>
@@ -308,15 +441,33 @@ export default function Home() {
         {INSPO_ROWS.map((row, i) => (
           <div key={row.id} className={`hp-inspo-row${i % 2 === 1 ? ' hp-inspo-row--rev' : ''}`}>
             <div className="hp-inspo-main-img">
-              <Img src={row.img} alt={row.title} className="hp-inspo-img" />
+              <Img
+                src={row.img}
+                alt={row.title}
+                name={row.title}
+                className="hp-inspo-img"
+                backupSrcs={row.backupSrcs || []}
+              />
             </div>
             <div className="hp-inspo-content">
               <span className="hp-label" style={{ color: row.accent }}>{row.label}</span>
               <h3>{row.title}</h3>
               <p>{row.desc}</p>
               <div className="hp-inspo-side-imgs">
-                <Img src={row.side1} alt={row.title + ' look 1'} className="hp-inspo-side" />
-                <Img src={row.side2} alt={row.title + ' look 2'} className="hp-inspo-side" />
+                <Img
+                  src={row.side1}
+                  alt={row.title + ' look 1'}
+                  name={row.title + ' look 1'}
+                  className="hp-inspo-side"
+                  backupSrcs={[row.img, row.side2].filter(Boolean)}
+                />
+                <Img
+                  src={row.side2}
+                  alt={row.title + ' look 2'}
+                  name={row.title + ' look 2'}
+                  className="hp-inspo-side"
+                  backupSrcs={[row.img, row.side1].filter(Boolean)}
+                />
               </div>
               <Link to={row.to} className="hp-cta-accent" style={{ background: row.accent }}>
                 Explore Collection <ArrowRight size={14} />

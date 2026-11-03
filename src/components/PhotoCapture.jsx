@@ -189,7 +189,13 @@ export default function PhotoCapture({ onConfirm, onCancel }) {
       {/* Preview */}
       {captured && preview && (
         <div className="photo-preview-wrap">
-          <img src={preview} alt="Reference preview" className="photo-preview-img" />
+          <img
+            src={preview}
+            alt="Reference preview"
+            className="photo-preview-img"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
           <div className="photo-preview-note">
             <ShieldCheck size={14} /> This preview exists only in browser memory and will be cleared when you close this panel.
           </div>

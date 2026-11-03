@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Mail } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import SafeImage from '../components/SafeImage';
 
-const IMG    = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=1200&fit=crop&crop=center';
-const IMG_FB = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=1200&fit=crop';
+const IMG    = '/images/auth-hero.jpg';
+const IMG_FB = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&q=80&auto=format&fit=crop';
 
 export default function ForgotPassword() {
   const [email,   setEmail]   = useState('');
   const [error,   setError]   = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [imgErr,  setImgErr]  = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +28,12 @@ export default function ForgotPassword() {
   return (
     <div className="prem-auth-page">
       <div className="prem-auth-visual">
-        <img
-          src={imgErr ? IMG_FB : IMG}
+        <SafeImage
+          src={IMG}
+          fallbackSrc={IMG_FB}
           alt="Fashion editorial"
+          name="Reset Password"
           className="prem-auth-img"
-          onError={() => setImgErr(true)}
         />
         <div className="prem-auth-visual-overlay">
           <div className="prem-auth-visual-content">
