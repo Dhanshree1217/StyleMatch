@@ -48,7 +48,7 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
         <Sparkles size={22} />
-        <span>CleverPe</span>
+        <span>StyleMatch</span>
       </Link>
 
       <ul className={`navbar-links ${open ? 'open' : ''}`}>

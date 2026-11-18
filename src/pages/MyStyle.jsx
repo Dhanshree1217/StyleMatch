@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CircleDollarSign, ExternalLink, LoaderCircle, SearchX, Shirt, ShoppingBag } from 'lucide-react';
-import SafeImage from '../components/SafeImage';
+import { useMemo, useState } from 'react';
+import { ExternalLink, Shirt, ShoppingBag, Sparkles } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
+import AmazonDatasetProducts from '../components/AmazonDatasetProducts';
+import { getStyleLooks } from '../data/styleLooksData';
+import './MyStyle.css';
 
-const STYLE_SELECTION_KEY = 'styleMatch.selection';
-
-const STYLE_CHIPS = [
+const STYLE_FILTERS = [
   { value: '', label: 'All Styles' },
   { value: 'ethnic-wear', label: 'Ethnic Wear' },
   { value: 'western', label: 'Western' },
@@ -18,253 +18,247 @@ const STYLE_CHIPS = [
   { value: 'party-wear', label: 'Party Wear' },
   { value: 'traditional-sarees', label: 'Sarees' },
   { value: 'athleisure', label: 'Athleisure' },
+  { value: 'daily-wear', label: 'Daily Wear' },
 ];
 
-const CATEGORY_OPTIONS = [
-  { value: '', label: 'All Categories' },
-  { value: 'tops-shirts', label: 'Tops & Shirts' },
-  { value: 'jeans-denim', label: 'Jeans & Denim' },
-  { value: 'dresses', label: 'Dresses' },
-  { value: 'kurtis-kurta', label: 'Kurtis & Kurtas' },
-  { value: 'winter-wear', label: 'Winter Wear' },
-  { value: 'summer-outfits', label: 'Summer Outfits' },
-  { value: 'shoes-sneakers', label: 'Shoes & Sneakers' },
-  { value: 'bags-accessories', label: 'Bags & Accessories' },
+const SEASON_FILTERS = ['All Seasons', 'Winter', 'Summer', 'Monsoon', 'All Season'];
+const AUDIENCE_FILTERS = [
+  { value: 'All', label: 'Everyone' },
+  { value: 'Women', label: 'Women' },
+  { value: 'Men', label: 'Men' },
+  { value: 'Girl', label: 'Girls' },
+  { value: 'Boy', label: 'Boys' },
 ];
-
-const PRICE_OPTIONS = [
-  { label: 'Any price', value: 'all' },
-  { label: 'Under ₹999', value: '0-999' },
-  { label: '₹1,000 – ₹2,499', value: '1000-2499' },
-  { label: '₹2,500 – ₹4,999', value: '2500-4999' },
-  { label: '₹5,000+', value: '5000+' },
+const AGE_FILTERS = [
+  'All Ages',
+  'Kids 2-5',
+  '6-12',
+  'Teen 13-17',
+  'Adult 18-35',
+  '35+',
 ];
-
-const parsePrice = (amount) => {
-  if (!amount) return Number.POSITIVE_INFINITY;
-  const cleaned = `${amount}`.replace(/[^\d.]/g, '').replace(/\.(?=.*\.)/g, '');
-  const numeric = Number(cleaned || 0);
-  return Number.isFinite(numeric) ? numeric : Number.POSITIVE_INFINITY;
-};
-
-const readSelectionFromStorage = () => {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STYLE_SELECTION_KEY) || '{}');
-    const category = ['Men', 'Women', 'Boy', 'Girl'].includes(saved.category) ? saved.category : 'Women';
-    const ageGroup = ['Kids 2-5', '6-12', 'Teen 13-17', 'Adult 18-35', '35+'].includes(saved.ageGroup) ? saved.ageGroup : 'Adult 18-35';
-    return { category, ageGroup };
-  } catch {
-    return { category: 'Women', ageGroup: 'Adult 18-35' };
-  }
-};
-
 export default function MyStyle() {
-  const navigate = useNavigate();
-  const [selection, setSelection] = useState(readSelectionFromStorage);
+  const [audience, setAudience] = useState('All');
+  const [ageGroup, setAgeGroup] = useState('All Ages');
   const [activeStyle, setActiveStyle] = useState('');
-  const [category, setCategory] = useState('');
-  const [priceRange, setPriceRange] = useState('all');
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [isDemo, setIsDemo] = useState(false);
-  const [fetchVersion, setFetchVersion] = useState(0);
-
-  useEffect(() => {
-    const savedSelection = readSelectionFromStorage();
-    if (!savedSelection.category || !savedSelection.ageGroup) {
-      navigate('/', { replace: true });
-      return;
-    }
-    setSelection(savedSelection);
-  }, [navigate]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError('');
-
-      try {
-        const params = new URLSearchParams({
-          gender: selection.category,
-          age_group: selection.ageGroup,
-          ...(category && { category }),
-          ...(activeStyle && { style: activeStyle }),
-        });
-
-        const response = await fetch(`/api/style-recommendations?${params}`);
-
-        if (!response.ok) throw new Error('Unable to load products right now.');
-
-        const data = await response.json();
-
-        if (!data.success) throw new Error(data.error || 'Failed to load recommendations.');
-
-        setProducts(Array.isArray(data.products) ? data.products : []);
-        setIsDemo(!!data.demo);
-      } catch (loadError) {
-        setProducts([]);
-        setError(loadError.message || 'Something went wrong while fetching product suggestions.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (selection.category && selection.ageGroup) fetchProducts();
-  }, [selection, activeStyle, category, fetchVersion]);
-
-  const filteredProducts = useMemo(() => {
-    if (priceRange === 'all') return products;
-    return products.filter((product) => {
-      const amount = parsePrice(product.price);
-      if (priceRange === '0-999') return amount < 999;
-      if (priceRange === '1000-2499') return amount >= 1000 && amount <= 2499;
-      if (priceRange === '2500-4999') return amount >= 2500 && amount <= 4999;
-      if (priceRange === '5000+') return amount >= 5000;
-      return true;
-    });
-  }, [priceRange, products]);
-
-  // Deduplicate by id/asin
-  const uniqueProducts = useMemo(() => {
-    const seen = new Set();
-    return filteredProducts.filter(p => {
-      const key = p.id || p.asin || p.title;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }, [filteredProducts]);
-
+  const [activeSeason, setActiveSeason] = useState('All Seasons');
+  const [expandedLookId, setExpandedLookId] = useState(null);
+  const looks = useMemo(
+    () => getStyleLooks({ audience, ageGroup }),
+    [audience, ageGroup],
+  );
+  const visibleLooks = useMemo(() => looks.filter((look) => (
+    (!activeStyle || look.style === activeStyle)
+    && (activeSeason === 'All Seasons' || look.season === activeSeason)
+  )), [looks, activeSeason, activeStyle]);
   return (
-    <div className="style-page-shell">
-      <div className="style-page-header">
-        <div>
-          <button type="button" className="btn-ghost style-back-button" onClick={() => navigate('/')}>
-            <ArrowLeft size={15} /> Change my selection
-          </button>
-          <h1>My Style</h1>
-          <p>{selection.category} • {selection.ageGroup}</p>
-        </div>
-      </div>
+    <div className="dashboard-layout">
+      <Sidebar />
 
-      {/* Style filter chips */}
-      <div className="ms-style-chips-wrap">
-        <p className="ms-chips-label">Style</p>
-        <div className="ms-style-chips">
-          {STYLE_CHIPS.map(chip => (
-            <button
-              key={chip.value}
-              type="button"
-              className={`ms-chip ${activeStyle === chip.value ? 'active' : ''}`}
-              onClick={() => setActiveStyle(chip.value)}
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <main className="dashboard-main ms-dashboard-main ms-lookbook-main">
+        <header className="ms-lookbook-header">
+          <div>
+            <p className="ms-lookbook-eyebrow"><Sparkles size={14} /> StyleMatch Lookbook</p>
+            <h1>My Style</h1>
+            <p>100 complete outfit ideas. Pick a look, check every piece and shop similar items.</p>
+          </div>
+        </header>
 
-      {/* Category + price filters */}
-      <div className="style-filter-bar">
-        <div className="filter-field">
-          <label htmlFor="categoryFilter">Category</label>
-          <select id="categoryFilter" value={category} onChange={e => setCategory(e.target.value)}>
-            {CATEGORY_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </div>
-        <div className="filter-field">
-          <label htmlFor="priceFilter">Price range</label>
-          <select id="priceFilter" value={priceRange} onChange={e => setPriceRange(e.target.value)}>
-            {PRICE_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+        <section className="ms-lookbook-filters" aria-label="Filter looks">
+          <div className="ms-filter-group">
+            <h2>For</h2>
+            <div className="ms-filter-chips" role="tablist" aria-label="Filter by audience">
+              {AUDIENCE_FILTERS.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  role="tab"
+                  aria-selected={audience === filter.value}
+                  className={`ms-filter-chip ${audience === filter.value ? 'active' : ''}`}
+                  onClick={() => setAudience(filter.value)}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {/* Demo mode notice */}
-      {isDemo && !loading && (
-        <div className="ms-demo-notice">
-          <ShoppingBag size={15} />
-          <span>
-            <strong>Demo Mode:</strong> These are sample products for development. Real Amazon India products will appear once live credentials are configured.
-          </span>
-        </div>
-      )}
+          <div className="ms-filter-group">
+            <h2>Age</h2>
+            <div className="ms-filter-chips" role="tablist" aria-label="Filter by age">
+              {AGE_FILTERS.map((age) => (
+                <button
+                  key={age}
+                  type="button"
+                  role="tab"
+                  aria-selected={ageGroup === age}
+                  className={`ms-filter-chip ${ageGroup === age ? 'active' : ''}`}
+                  onClick={() => setAgeGroup(age)}
+                >
+                  {age}
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {loading ? (
-        <div className="status-card loading-state">
-          <LoaderCircle className="spin" size={30} />
-          <h3>Finding styles for you…</h3>
-          <p>Checking picks for {selection.category} • {selection.ageGroup}</p>
-        </div>
-      ) : error ? (
-        <div className="status-card error-state">
-          <SearchX size={30} />
-          <h3>We hit a snag</h3>
-          <p>{error}</p>
-          <button type="button" className="btn-primary" onClick={() => setFetchVersion(v => v + 1)}>
-            Try again
-          </button>
-        </div>
-      ) : uniqueProducts.length === 0 ? (
-        <div className="status-card empty-state">
-          <Shirt size={30} />
-          <h3>No matching products found</h3>
-          <p>Try a different style or category for this profile.</p>
-          <button type="button" className="btn-primary" onClick={() => { setActiveStyle(''); setCategory(''); setPriceRange('all'); }}>
-            Reset filters
-          </button>
-        </div>
-      ) : (
-        <section className="product-grid">
-          {uniqueProducts.map((product, index) => (
-            <article key={product.id || `${product.title}-${index}`} className="product-card">
-              <div className="product-image-wrap">
-                {product.image ? (
-                  <SafeImage
-                    src={product.image}
-                    alt={product.title}
-                    name={product.title}
-                    className="product-image"
-                    fallbackSrc="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80&auto=format&fit=crop"
-                  />
-                ) : (
-                  <div className="product-image-placeholder">
-                    <CircleDollarSign size={28} />
-                  </div>
-                )}
-                {isDemo && <span className="ms-demo-badge">Demo</span>}
-              </div>
-              <div className="product-body">
-                <h3>{product.title}</h3>
-                <p className="product-price">{product.price || 'See price on Amazon'}</p>
-                {product.affiliate_url ? (
-                  <a
-                    href={product.affiliate_url}
-                    target="_blank"
-                    rel="nofollow sponsored noopener noreferrer"
-                    className="btn-primary product-buy-button"
-                  >
-                    Shop on Amazon <ExternalLink size={13} />
-                  </a>
-                ) : (
-                  <span className="ms-demo-shop-btn">Shop on Amazon (Demo)</span>
-                )}
-              </div>
-            </article>
-          ))}
+          <div className="ms-filter-group">
+            <h2>Season</h2>
+            <div className="ms-filter-chips" role="tablist" aria-label="Filter by season">
+              {SEASON_FILTERS.map((season) => (
+                <button
+                  key={season}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeSeason === season}
+                  className={`ms-filter-chip ${activeSeason === season ? 'active' : ''}`}
+                  onClick={() => setActiveSeason(season)}
+                >
+                  {season}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="ms-filter-group">
+            <h2>Style</h2>
+            <div className="ms-filter-chips" role="tablist" aria-label="Filter by style">
+              {STYLE_FILTERS.map((style) => (
+                <button
+                  key={style.value || 'all'}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeStyle === style.value}
+                  className={`ms-filter-chip ${activeStyle === style.value ? 'active' : ''}`}
+                  onClick={() => setActiveStyle(style.value)}
+                >
+                  {style.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
-      )}
 
-      {/* Affiliate disclosure – required by Amazon Associates Program */}
-      <footer className="affiliate-footer">
-        <p>As an Amazon Associate I earn from qualifying purchases.</p>
-        {isDemo && <p className="ms-demo-footer-note">Product images are placeholders. No affiliate links are active in demo mode.</p>}
-      </footer>
+        <AmazonDatasetProducts />
+
+        <div className="ms-lookbook-results">
+          <h2>{activeSeason === 'All Seasons' ? 'All looks' : `${activeSeason} looks`}</h2>
+          <span>{visibleLooks.length} looks</span>
+        </div>
+
+        {visibleLooks.length === 0 ? (
+          <div className="ms-lookbook-empty">
+            <Shirt size={28} />
+            <p>No looks match these filters.</p>
+            <button
+              type="button"
+              className="ms-filter-chip"
+              onClick={() => {
+                setAudience('All');
+                setAgeGroup('All Ages');
+                setActiveStyle('');
+                setActiveSeason('All Seasons');
+              }}
+            >
+              Show all looks
+            </button>
+          </div>
+        ) : (
+          <section className="ms-lookbook-grid" aria-label="Complete outfit looks">
+            {visibleLooks.map((look) => {
+              const isExpanded = expandedLookId === look.id;
+              return (
+                <article className={`ms-look-card ${isExpanded ? 'expanded' : ''}`} key={look.id}>
+                  <div className="ms-look-image-wrap">
+                    <a
+                      className="ms-look-image-link"
+                      href={look.amazonUrl}
+                      target="_blank"
+                      rel="nofollow sponsored noopener noreferrer"
+                      aria-label={`Shop ${look.title} on Amazon India`}
+                    >
+                      <div className="ms-look-placeholder" aria-hidden="true">
+                        <Shirt size={38} />
+                        <span>See real outfit photos on Amazon</span>
+                      </div>
+                      <span className="ms-look-season">{look.season}</span>
+                      <span className="ms-look-shop-badge">
+                        <ShoppingBag size={13} /> Shop on Amazon
+                      </span>
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    className="ms-look-card-toggle"
+                    aria-expanded={isExpanded}
+                    onClick={() => setExpandedLookId(isExpanded ? null : look.id)}
+                  >
+                    <div className="ms-look-card-copy">
+                      <span className="ms-look-style">{look.styleLabel}</span>
+                      <h3>{look.title}</h3>
+                      <span className="ms-look-audience">
+                        {look.audienceLabel} · {look.ageGroup}
+                      </span>
+                      <div className="ms-look-card-meta">
+                        <span><Shirt size={14} /> {look.items.length} pieces</span>
+                        <strong>{look.total}</strong>
+                      </div>
+                      <span className="ms-look-open-label">
+                        {isExpanded ? 'Hide pieces' : 'See complete look'}
+                      </span>
+                    </div>
+                  </button>
+
+                  {isExpanded && (
+                    <div className="ms-look-pieces">
+                      <h4>Pieces in this look</h4>
+                      {look.items.map((item) => (
+                        <div className="ms-look-piece" key={item.id}>
+                          <div className="ms-look-piece-icon" aria-hidden="true">
+                            <Shirt size={18} />
+                          </div>
+                          <div className="ms-look-piece-info">
+                            <strong>{item.name}</strong>
+                            <span>{item.price || 'See price on Amazon'}</span>
+                          </div>
+                          <div className="ms-look-piece-links">
+                            <a
+                              href={item.amazonUrl}
+                              target="_blank"
+                              rel="nofollow sponsored noopener noreferrer"
+                              aria-label={`See ${item.name} on Amazon India`}
+                            >
+                              Amazon <ExternalLink size={12} />
+                            </a>
+                            <a
+                              href={item.similarUrl}
+                              target="_blank"
+                              rel="nofollow sponsored noopener noreferrer"
+                              aria-label={`See similar items to ${item.name} on Amazon India`}
+                            >
+                              Similar <ExternalLink size={12} />
+                            </a>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="ms-look-total">
+                        <span>Estimated total</span>
+                        <strong>{look.total}</strong>
+                      </div>
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </section>
+        )}
+
+        <footer className="ms-lookbook-note">
+          <ShoppingBag size={14} />
+          Amazon photos and current prices open when you shop a look. Demo mode has no official
+          Amazon photo feed, so unrelated photos are hidden. Prices here are estimates.
+          As an Amazon Associate I earn from qualifying purchases.
+        </footer>
+      </main>
     </div>
   );
 }

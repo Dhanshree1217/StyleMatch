@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import SafeImage from '../components/SafeImage';
+import AmazonDatasetProducts from '../components/AmazonDatasetProducts';
 import { useAuth } from '../context/AuthContext';
 import { getSavedOutfits, saveOutfits, getWardrobe } from '../utils/storage';
 import { categories, outfits } from '../data/fashionData';
@@ -229,6 +230,8 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            <AmazonDatasetProducts compact />
 
             {/* Category Pills — original 8 only */}
             <div className="dm-section dm-flush">

@@ -75,6 +75,283 @@
   box-shadow: 0 12px 30px rgba(168, 85, 247, 0.24);
 }
 
+/* --------------------------------------------------------------------------
+   DASHBOARD INTEGRATED MY STYLE
+   -------------------------------------------------------------------------- */
+
+.ms-dashboard-main {
+  background: linear-gradient(180deg, #fff7fb 0%, #faf5ff 40%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+.ms-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ms-page-header h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0 0 6px;
+}
+
+.ms-page-header p {
+  color: #6b7280;
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.ms-profile-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 72, 153, 0.2);
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.08);
+}
+
+.ms-tag-pill {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #a855f7;
+  background: #faf5ff;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.ms-change-selection-btn {
+  background: transparent;
+  border: none;
+  color: #ec4899;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 6px;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.ms-change-selection-btn:hover {
+  color: #be185d;
+}
+
+.ms-chips-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.ms-clear-style-btn {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: #a855f7;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.ms-clear-style-btn:hover {
+  color: #7c3aed;
+}
+
+.ms-style-chips-wrap {
+  margin-bottom: 24px;
+}
+
+.ms-chips-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.ms-style-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ms-chip {
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  color: #374151;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ms-chip:hover {
+  border-color: #ec4899;
+  color: #ec4899;
+}
+
+.ms-chip.active {
+  background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
+}
+
+.ms-picks-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 32px auto 16px;
+}
+
+.ms-picks-title-wrap h2 {
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.ms-picks-title-wrap p {
+  color: #6b7280;
+  font-size: 0.94rem;
+  margin: 0;
+}
+
+.ms-demo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.ms-fallback-banner {
+  max-width: 1200px;
+  margin: 0 auto 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ms-amazon-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff9900;
+  color: #111827;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.ms-card-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.ms-review-cnt {
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.ms-price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ms-mrp-price {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.ms-discount-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.ms-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ms-btn-buy {
+  background: #ff9900 !important;
+  color: #111827 !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(255, 153, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.ms-btn-buy:hover {
+  background: #f08804 !important;
+  transform: translateY(-1px);
+}
+
+.ms-btn-quick-view {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ms-btn-quick-view:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
 .style-page-shell {
   min-height: 100vh;
   background: linear-gradient(180deg, #fff7fb 0%, #ffffff 30%, #ffffff 100%);
@@ -104,6 +381,24 @@
   background: #fff;
   color: #be185d;
   box-shadow: 0 10px 24px rgba(14, 116, 144, 0.04);
+}
+
+.ms-picks-heading {
+  max-width: 1200px;
+  margin: 32px auto 16px;
+}
+
+.ms-picks-heading h2 {
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.ms-picks-heading p {
+  color: #6b7280;
+  font-size: 0.94rem;
+  margin: 0;
 }
 
 .style-filter-bar {
@@ -272,7 +567,25 @@
 
 @media (max-width: 768px) {
   .style-quiz-grid,
-  .style-filter-bar {
+  .ms-picks-heading {
+  max-width: 1200px;
+  margin: 32px auto 16px;
+}
+
+.ms-picks-heading h2 {
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.ms-picks-heading p {
+  color: #6b7280;
+  font-size: 0.94rem;
+  margin: 0;
+}
+
+.style-filter-bar {
     grid-template-columns: 1fr;
   }
 

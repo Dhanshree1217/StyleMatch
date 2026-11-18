@@ -1,0 +1,234 @@
+.amazon-dataset-section {
+  margin: 0 0 30px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #f1e7f5;
+  border-radius: 16px;
+}
+
+.amazon-dataset-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.amazon-dataset-heading h2 {
+  margin: 0 0 5px;
+  color: #1f2937;
+  font-size: 1.2rem;
+}
+
+.amazon-dataset-heading p,
+.amazon-dataset-data-note {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.amazon-dataset-count {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  color: #7e22ce;
+  background: #faf5ff;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.amazon-dataset-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.amazon-dataset-filter-group,
+.amazon-dataset-category-filter {
+  display: grid;
+  gap: 6px;
+  color: #6b7280;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.amazon-dataset-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.amazon-dataset-filter-chips button {
+  padding: 6px 11px;
+  color: #4b5563;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.amazon-dataset-filter-chips button.active {
+  color: #fff;
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  border-color: transparent;
+}
+
+.amazon-dataset-category-filter {
+  min-width: min(100%, 260px);
+}
+
+.amazon-dataset-category-filter select {
+  max-width: 100%;
+  padding: 9px 12px;
+  color: #374151;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 500;
+}
+
+.amazon-dataset-data-note {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+}
+
+.amazon-dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.amazon-dataset-card {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #eee6f0;
+  border-radius: 14px;
+}
+
+.amazon-dataset-image {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f7f2f8;
+}
+
+.amazon-dataset-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.amazon-dataset-no-image {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  color: #8b5aa8;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.amazon-dataset-product-copy {
+  display: grid;
+  gap: 7px;
+  padding: 13px;
+}
+
+.amazon-dataset-product-copy h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 0.91rem;
+  line-height: 1.4;
+}
+
+.amazon-dataset-product-copy > span,
+.amazon-dataset-product-copy > p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.amazon-dataset-product-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #111827;
+  font-size: 0.86rem;
+}
+
+.amazon-dataset-product-meta span {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.amazon-dataset-product-copy a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #7e22ce;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.amazon-dataset-product-copy a:hover {
+  text-decoration: underline;
+}
+
+.amazon-dataset-message {
+  margin: 14px 0 0;
+  padding: 24px;
+  color: #6b7280;
+  background: #fff;
+  border: 1px solid #eee6f0;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.amazon-dataset-show-all {
+  display: block;
+  margin: 16px auto 0;
+  padding: 8px 14px;
+  color: #7e22ce;
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.amazon-dataset-show-all:hover {
+  background: #f3e8ff;
+}
+
+@media (max-width: 1100px) {
+  .amazon-dataset-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .amazon-dataset-section {
+    padding: 15px;
+  }
+
+  .amazon-dataset-grid {
+    grid-template-columns: 1fr;
+  }
+}
